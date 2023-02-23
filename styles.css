@@ -1,0 +1,11 @@
+.hiddenRow{
+    padding: 0 !important;
+}
+
+tr[aria-expanded=true] td .bi-chevron-down{
+    display: none;
+}
+
+tr[aria-expanded=false] td .bi-chevron-up{
+    display: none;
+}
