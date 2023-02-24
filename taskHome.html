@@ -68,13 +68,25 @@
                     <tr class="accordion-toggle" data-bs-toggle="collapse" data-bs-target="#row1" aria-expanded="false"
                         aria-controls="#row1">
                         <th scope="row">Task A</th>
-                        <td>Complete</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-success dropdown-toggle w-75" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    Complete
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Complete</a></li>
+                                    <li><a class="dropdown-item" href="#">Pending</a></li>
+                                    <li><a class="dropdown-item" href="#">Not Started</a></li>
+                                </ul>
+                            </div>
+                        </td>
                         <td>Trials</td>
                         <td>Kevin N.</td>
-                        <td>High</td>
+                        <td><button class="btn btn-outline-danger btn-sm w-75">High</button></td>
                         <td>Feb 22, 2023</td>
                         <td>Feb 23, 2023</td>
-                        <td class="text-center"><button class="btn btn-secondary">View Task</button></td>
+                        <td class="text-center"><button class="btn btn-primary text-light">View Task</button></td>
                     </tr>
                     <tr>
                         <td colspan="12" class="hiddenRow">
@@ -93,13 +105,25 @@
                     <tr class="accordion-toggle" data-bs-toggle="collapse" data-bs-target="#row2" aria-expanded="false"
                         aria-controls="#row2">
                         <th scope="row">Task B</th>
-                        <td>Complete</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-warning dropdown-toggle w-75" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    Pending
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Complete</a></li>
+                                    <li><a class="dropdown-item" href="#">Pending</a></li>
+                                    <li><a class="dropdown-item" href="#">Not Started</a></li>
+                                </ul>
+                            </div>
+                        </td>
                         <td>Trials</td>
                         <td>Kevin N.</td>
-                        <td>High</td>
+                        <td><button class="btn btn-outline-warning btn-sm w-75">Medium</button></td>
                         <td>Feb 22, 2023</td>
                         <td>Feb 23, 2023</td>
-                        <td class="text-center"><button class="btn btn-secondary">View Task</button></td>
+                        <td class="text-center"><button class="btn btn-primary text-light">View Task</button></td>
                     </tr>
                     <tr>
                         <td colspan="12" class="hiddenRow">
@@ -120,13 +144,25 @@
                     <tr class="accordion-toggle" data-bs-toggle="collapse" data-bs-target="#row3" aria-expanded="false"
                         aria-controls="#row3">
                         <th scope="row">Task C</th>
-                        <td>Complete</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-danger dropdown-toggle w-75" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    Not Started
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Complete</a></li>
+                                    <li><a class="dropdown-item" href="#">Pending</a></li>
+                                    <li><a class="dropdown-item" href="#">Not Started</a></li>
+                                </ul>
+                            </div>
+                        </td>
                         <td>Trials</td>
                         <td>Kevin N.</td>
-                        <td>High</td>
+                        <td><button class="btn btn-outline-secondary btn-sm w-75">Low</button></td>
                         <td>Feb 22, 2023</td>
                         <td>Feb 23, 2023</td>
-                        <td class="text-center"><button class="btn btn-secondary">View Task</button></td>
+                        <td class="text-center"><button class="btn btn-primary text-light">View Task</button></td>
                     </tr>
                     <tr>
                         <td colspan="12" class="hiddenRow">
@@ -152,13 +188,25 @@
                     </tr>
                     <tr>
                         <th scope="row">Task D</th>
-                        <td>Pending</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle w-75" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    Unassigned
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Complete</a></li>
+                                    <li><a class="dropdown-item" href="#">Pending</a></li>
+                                    <li><a class="dropdown-item" href="#">Not Started</a></li>
+                                </ul>
+                            </div>
+                        </td>
                         <td>House</td>
                         <td>John D.</td>
-                        <td>Low</td>
+                        <td><button class="btn btn-outline-secondary btn-sm w-75">Low</button></td>
                         <td>Feb 12, 2023</td>
                         <td>Feb 28, 2023</td>
-                        <td class="text-center"><button class="btn btn-secondary" data-bs-toggle="modal"
+                        <td class="text-center"><button class="btn btn-primary text-light" data-bs-toggle="modal"
                                 data-bs-target="#exampleModal">View Task</button></td>
                     </tr>
 
@@ -172,7 +220,8 @@
     </div> <!-- Task Dashboard Ends -->
 
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="exampleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
