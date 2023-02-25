@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'styles.css' %}">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.2/css/dataTables.bootstrap5.min.css">
-    <title>My Task Dashboard</title>
+    <title>Navbar</title>
     <link rel="icon" type="image/x-icon" href="{% static 'media/okeefeLogo.jpg' %}">
     <script defer src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
         integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
@@ -26,14 +26,13 @@
 
 </head>
  
-  <body style="padding-top: 100px;">
 	<!-- Navbar -->
-<nav class="navbar navbar-expand-lg fixed-top">
+<nav class="navbar navbar-expand-lg">
   <div class="container">
     <a class="navbar-brand" href="#"
       ><img
         id="logo"
-        src="Okeefe logo.png"
+        src="{% static 'media/okeefeLogo.png' %}"
         alt="Logo"
         draggable="false"
         height="100"
