@@ -1,13 +1,12 @@
-from audioop import reverse
-
 from django.shortcuts import render
-from django.contrib.auth import get_user_model, login
+from django.contrib.auth import get_user_model
 from .forms import *
 from .models import *
 from django.http import HttpResponse, HttpResponseRedirect
+from taskManager.models import Task
+from django.contrib.auth.models import User
 
 # Create your views here.
-from taskManager.models import Task
 
 
 def index(request):
@@ -30,7 +29,12 @@ def register(request):
     if request.method == "POST":
         form = CreateUserForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            return HttpResponse('success')
+            form.save()
+            return HttpResponse('Create User Successfully!')
     context = {'form': userForm}
     return render(request, 'sample.html', context)
+
+
+def getAllUsers(request):
+    user_list = User.objects.all()
+    return render(request, 'allusers.html', {'list': user_list})
