@@ -1,15 +1,39 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, widgets
 from .models import Task
 
 
 class TaskForm(ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['name'].widget.attrs['class'] = 'form-control'
+        self.fields['user'].widget.attrs['class'] = 'form-select'
+        self.fields['category'].widget.attrs['class'] = 'form-select'
+        self.fields['priority'].widget.attrs['class'] = 'form-select'
+        self.fields['date_due'].widget = widgets.DateInput(
+            attrs={'type': 'date', 'class': 'form-control'}
+        )
+        self.fields['repeat'].widget.attrs['class'] = 'form-select'
+        self.fields['desc'].widget = widgets.Textarea(
+            attrs={'class': 'form-control', 'rows': '5'}
+        )
+
     class Meta:
         model = Task
-        fields = ['name',
-                  'user',
-                  'category',
-                  'priority',
-                  'date_due',
-                  'repeat',
-                  'desc'
-                  ]
+        labels = {
+            'name': 'Task Name',
+            'user': 'Assign To',
+            'desc': 'Description',
+            'date_due': 'Date Due',
+            'repeat': 'Is this a recurring task?'
+            }
+        fields = [
+            'name',
+            'user',
+            'category',
+            'priority',
+            'date_due',
+            'repeat',
+            'desc',
+            ]
