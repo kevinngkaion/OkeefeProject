@@ -47,7 +47,8 @@
                 </div>
                 <div class="col-4 d-flex justify-content-end">
                     <!-- Create Task -->
-                    <button class="btn btn-primary text-light text-uppercase" type="button" data-bs-toggle="modal" data-bs-target="#modalCreateTask">Create Task</button>
+                    <button class="btn btn-primary text-light text-uppercase" type="button" data-bs-toggle="modal"
+                        data-bs-target="#modalCreateTask">Create Task</button>
                 </div>
             </div>
 
@@ -60,175 +61,40 @@
                         <th scope="col">Department</th>
                         <th scope="col">Assigned To</th>
                         <th scope="col">Priority</th>
-                        <th scope="col">Start Date</th>
+                        <th scope="col">Date Created</th>
                         <th scope="col">Due Date</th>
                         <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody id="taskTable">
-                    <tr class="accordion-toggle" data-bs-toggle="collapse" data-bs-target="#row1" aria-expanded="false"
-                        aria-controls="#row1">
-                        <th scope="row">Task A</th>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-success dropdown-toggle w-75" type="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                    Complete
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">Complete</a></li>
-                                    <li><a class="dropdown-item" href="#">Pending</a></li>
-                                    <li><a class="dropdown-item" href="#">Not Started</a></li>
-                                </ul>
-                            </div>
-                        </td>
-                        <td>Trials</td>
-                        <td>Kevin N.</td>
-                        <td><button class="btn btn-outline-danger btn-sm w-75">High</button></td>
-                        <td>Feb 22, 2023</td>
-                        <td>Feb 23, 2023</td>
-                        <td class="text-center"><button class="btn btn-primary text-light">View Task</button></td>
+                    {% for task in tasks %}
+                    <tr class="accordion-toggle" data-bs-toggle="collapse" data-bs-target="#row" aria-expanded="false"
+                        aria-controls="#row">
+                        <th scope="row">{{ task.name }}</th>
+                        <td>{{ task.get_status_display }}</td>
+                        <td>{{ task.category }}</td>
+                        <td>{{ task.user }}</td>
+                        <td>{{ task.get_priority_display }}</td>
+                        <td>{{ task.date_created }}</td>
+                        <td>{{ task.date_due }}</td>
+                        <td class="text-center"><button class="btn btn-primary text-light" data-bs-toggle="modal" data-bs-target="#modalViewTask" onclick="showTaskInfo('{{task.name}}', '{{task.desc}}')">View Task</button></td>
                     </tr>
-                    <tr>
-                        <td colspan="12" class="hiddenRow">
-                            <div class="accordion-body collapse text-start" id="row1" data-bs-parent="#taskTable">
-                                Task D
-                            </div>
-                        </td>
-                        <td class="d-none"></td>
-                        <td class="d-none"></td>
-                        <td class="d-none"></td>
-                        <td class="d-none"></td>
-                        <td class="d-none"></td>
-                        <td class="d-none"></td>
-                        <td class="d-none"></td>
-                    </tr>
-                    <tr class="accordion-toggle" data-bs-toggle="collapse" data-bs-target="#row2" aria-expanded="false"
-                        aria-controls="#row2">
-                        <th scope="row">Task B</th>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-warning dropdown-toggle w-75" type="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                    Pending
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">Complete</a></li>
-                                    <li><a class="dropdown-item" href="#">Pending</a></li>
-                                    <li><a class="dropdown-item" href="#">Not Started</a></li>
-                                </ul>
-                            </div>
-                        </td>
-                        <td>Trials</td>
-                        <td>Kevin N.</td>
-                        <td><button class="btn btn-outline-warning btn-sm w-75">Medium</button></td>
-                        <td>Feb 22, 2023</td>
-                        <td>Feb 23, 2023</td>
-                        <td class="text-center"><button class="btn btn-primary text-light">View Task</button></td>
-                    </tr>
-                    <tr>
-                        <td colspan="12" class="hiddenRow">
-                            <div class="accordion-body collapse text-start" id="row2" data-bs-parent="#taskTable">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus, perferendis animi
-                                distinctio, sunt eligendi tempora vel dignissimos pariatur, minus porro incidunt rem
-                                dolor odio a provident ab! Iure, enim pariatur.
-                            </div>
-                        </td>
-                        <td class="d-none"></td>
-                        <td class="d-none"></td>
-                        <td class="d-none"></td>
-                        <td class="d-none"></td>
-                        <td class="d-none"></td>
-                        <td class="d-none"></td>
-                        <td class="d-none"></td>
-                    </tr>
-                    <tr class="accordion-toggle" data-bs-toggle="collapse" data-bs-target="#row3" aria-expanded="false"
-                        aria-controls="#row3">
-                        <th scope="row">Task C</th>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-danger dropdown-toggle w-75" type="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                    Not Started
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">Complete</a></li>
-                                    <li><a class="dropdown-item" href="#">Pending</a></li>
-                                    <li><a class="dropdown-item" href="#">Not Started</a></li>
-                                </ul>
-                            </div>
-                        </td>
-                        <td>Trials</td>
-                        <td>Kevin N.</td>
-                        <td><button class="btn btn-outline-secondary btn-sm w-75">Low</button></td>
-                        <td>Feb 22, 2023</td>
-                        <td>Feb 23, 2023</td>
-                        <td class="text-center"><button class="btn btn-primary text-light">View Task</button></td>
-                    </tr>
-                    <tr>
-                        <td colspan="12" class="hiddenRow">
-                            <div class="accordion-body collapse text-start" id="row3" data-bs-parent="#taskTable">
-                                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptatibus eius non tenetur
-                                quis similique, sapiente adipisci distinctio quia. Magnam ad cum magni, commodi quasi
-                                quae unde nisi, facilis sint perspiciatis dolorem rerum aut iusto earum, inventore
-                                quidem? Esse aperiam eius alias ea sint vel, quos qui sed illo repellat? Debitis
-                                distinctio aperiam odit illo laboriosam ea officiis alias molestiae ullam quae, quo
-                                reiciendis accusamus necessitatibus, molestias sit. Distinctio debitis deserunt quisquam
-                                sint! Eum ea quasi, architecto neque ullam labore necessitatibus inventore laudantium
-                                dolores nihil placeat, cum enim doloremque accusantium quas. Nihil nobis a fuga facilis
-                                corporis vel illo commodi deleniti.
-                            </div>
-                        </td>
-                        <td class="d-none"></td>
-                        <td class="d-none"></td>
-                        <td class="d-none"></td>
-                        <td class="d-none"></td>
-                        <td class="d-none"></td>
-                        <td class="d-none"></td>
-                        <td class="d-none"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Task D</th>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle w-75" type="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                    Unassigned
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">Complete</a></li>
-                                    <li><a class="dropdown-item" href="#">Pending</a></li>
-                                    <li><a class="dropdown-item" href="#">Not Started</a></li>
-                                </ul>
-                            </div>
-                        </td>
-                        <td>House</td>
-                        <td>John D.</td>
-                        <td><button class="btn btn-outline-secondary btn-sm w-75">Low</button></td>
-                        <td>Feb 12, 2023</td>
-                        <td>Feb 28, 2023</td>
-                        <td class="text-center"><button class="btn btn-primary text-light" data-bs-toggle="modal" data-bs-target="#modalViewTask">View Task</button></td>
-                    </tr>
-
+                    {% endfor %}
                 </tbody>
-
             </table>
-
-
-
         </div>
-    </div> <!-- Task Dashboard Ends -->
+    </div>
+    <!-- Task Dashboard Ends -->
 
     <!-- Modal View Task-->
     <div class="modal fade" id="modalViewTask" tabindex="-1" aria-labelledby="modalTitleViewTask" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modalTitleViewTask">View Task Modal</h1>
+                    <h1 class="modal-title fs-5" id="modal-task-name">View Task Modal</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi amet quod eveniet? Id tempore accusamus delectus deleniti voluptates iusto at, culpa vel atque quae animi et corrupti! Praesentium, quia? Earum.
+                <div id="task-info" class="modal-body">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -239,80 +105,53 @@
     </div>
 
     <!-- Modal Create Task -->
-    <div class="modal fade" id="modalCreateTask" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalTitleCreateTask" aria-hidden="true">
+    <div class="modal fade" id="modalCreateTask" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="modalTitleCreateTask" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-light" data-bs-theme="dark">
                     <h1 class="modal-title fs-5" id="modalHeaderCreateTask">Create a Task</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="" class="form p-4" id="formCreateTask">
-                    <div class="modal-body mb-3 pb-3">
-                      <div class="row d-flex flex-wrap justify-content-between my-3">
-                        <div class="col-11 col-md-5 mx-4">
-                          <label for="taskName" class="form-label">Task Name</label>
-                          <input type="text" class="form-control" id="taskName">
+                <!-- Form Proper -->
+                <form action="" method="POST" class="form p-4" id="formCreateTask">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <!-- Looping through the form fields-->
+                        {% for field in form %}
+                        <!-- Group every 2 fields together into a div -->
+                        {% if forloop.counter0|divisibleby:2 %}
+                            <div class="row d-flex flex-wrap justify-content-between mb-3">
+                                <!-- Give the description its own row -->
+                                {% if field.label == 'Description' %}
+                                <div class="col mx-4">
+                                    {{field.label}}
+                                    {{field}}
+                                </div>
+                                {% else %}
+                                <div class="col-11 col-md-5 mx-4">
+                                    {{field.label}}
+                                    {{field}}
+                                </div>
+                                {% endif %}
+                            
+                        {% else %}
+                            <div class="col-11 col-md-5 mx-4">
+                                {{field.label}}
+                                {{field}}
+                            </div>
                         </div>
-                        <div class="col-11 col-md-5 mx-4">
-                          <label for="taskCat" class="form-label">Task Category</label>
-                          <select class="form-select" aria-label="Default select taskCategory" id="taskCat">
-                            <option selected>Select a category</option>
-                            <option value="1">Programming</option>
-                            <option value="2">Front of House</option>
-                            <option value="3">Animals</option>
-                          </select>
-                        </div>
-                      </div>
-          
-                      <div class="row d-flex flex-wrap justify-content-between my-3">
-                        <div class="col-11 col-md-5 mx-4">
-                          <label for="taskPrio" class="form-label">Task Priority</label>
-                          <select class="form-select" aria-label="Default select taskPriority" id="taskPrio">
-                            <option value="1">High</option>
-                            <option value="2">Medium</option>
-                            <option value="3">Low</option>
-                          </select>
-                        </div>
-                        <div class="col-11 col-md-5 mx-4">
-                          <label for="taskAssign" class="form-label">Assign to Employee</label>
-                          <select class="form-select" aria-label="Default select taskAssign" id="taskAssign">
-                            <option value="0" selected>Unassigned</option>
-                            <option value="1">Kevin</option>
-                            <option value="2">Dake</option>
-                            <option value="3">Tuscun</option>
-                            <option value="4">Celia</option>
-                          </select>
-                        </div>
-                      </div>
-          
-                      <div class="row d-flex flex-wrap justify-content-between my-3">
-                        <div class="col-11 col-md-5 mx-4">
-                          <label for="taskStartDate" class="form-label">Start Date</label>
-                          <input type="date" class="form-control">
-                        </div>
-                        <div class="col-11 col-md-5 mx-4">
-                          <label for="taskDueDate" class="form-label">Due Date</label>
-                          <input type="date" class="form-control">
-                        </div>
-                      </div>
-          
-                      <div class="row d-flex my-3">
-                        <div class="col mx-4">
-                          <label for="taskDesc" class="form-label">Description</label>
-                          <textarea name="taskDesc" id="taskDesc"rows="5" class="form-control" form="formCreateTask"></textarea>
-                        </div>
-                      </div>
-          
+                        {% endif %}
+                        {% endfor %}
                     </div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-primary text-light" onclick="createTask()">Save changes</button>
+                        <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-lg text-light" value="">Save</button>
                     </div>
-                  </form>
+                </form>
             </div>
         </div>
     </div>
-
 
 </body>
 
