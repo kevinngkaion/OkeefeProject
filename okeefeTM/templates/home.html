@@ -67,18 +67,17 @@
                     </tr>
                 </thead>
                 <tbody id="taskTable">
-                    {% for row in task %}
+                    {% for task in tasks %}
                     <tr class="accordion-toggle" data-bs-toggle="collapse" data-bs-target="#row" aria-expanded="false"
                         aria-controls="#row">
-                        <th scope="row">{{ row.name }}</th>
-                        <td>{{ row.get_status_display }}</td>
-                        <td>{{ row.category }}</td>
-                        <td>{{ row.user }}</td>
-                        <td>{{ row.get_priority_display }}</td>
-                        <td>{{ row.date_created }}</td>
-                        <td>{{ row.date_due }}</td>
-                        <td class="text-center"><button class="btn btn-primary text-light" data-bs-toggle="modal"
-                                data-bs-target="#modalViewTask">View Task</button></td>
+                        <th scope="row">{{ task.name }}</th>
+                        <td>{{ task.get_status_display }}</td>
+                        <td>{{ task.category }}</td>
+                        <td>{{ task.user }}</td>
+                        <td>{{ task.get_priority_display }}</td>
+                        <td>{{ task.date_created }}</td>
+                        <td>{{ task.date_due }}</td>
+                        <td class="text-center"><button class="btn btn-primary text-light" data-bs-toggle="modal" data-bs-target="#modalViewTask" onclick="showTaskInfo('{{task.name}}', '{{task.desc}}')">View Task</button></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -92,13 +91,10 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modalTitleViewTask">View Task Modal</h1>
+                    <h1 class="modal-title fs-5" id="modal-task-name">View Task Modal</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi amet quod eveniet? Id tempore
-                    accusamus delectus deleniti voluptates iusto at, culpa vel atque quae animi et corrupti!
-                    Praesentium, quia? Earum.
+                <div id="task-info" class="modal-body">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

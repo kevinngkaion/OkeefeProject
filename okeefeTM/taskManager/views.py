@@ -7,7 +7,7 @@ from django.http import HttpResponse
 
 # Create your views here.
 def index(request):
-    task = Task.objects.all()
+    tasks = Task.objects.all()
     
 
     taskform = TaskForm
@@ -17,5 +17,5 @@ def index(request):
         if form.is_valid():
             form.save()
     context = {'form': taskform,
-               'task': task}
+               'tasks': tasks}
     return render(request, 'home.html', context)
