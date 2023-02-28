@@ -33,16 +33,20 @@ class Task(models.Model):
     (IN_PROGRESS, "In Progress"),
     (COMPLETE, "Complete"),
   ]
+  BOOLEAN_CHOICES = [
+    (True, "Yes"),
+    (False, "No"),
+  ]
   user = models.ForeignKey(User, on_delete=models.RESTRICT)
   category = models.ForeignKey(Category, on_delete=models.RESTRICT)
   name = models.CharField(max_length=150)
   desc = models.CharField(max_length=255)
   priority = models.IntegerField(choices=PRIORITY_CHOICES, default=LOW)
-  status = models.IntegerField(choices=STATUS_CHOICES, default=LOW)
+  status = models.IntegerField(choices=STATUS_CHOICES, default=UNASSIGNED)
   date_created = models.DateField(default=timezone.now())
   date_due = models.DateField(null=True, blank=True, default=None)
   date_completed = models.DateField(null=True, blank=True, default=None)
-  repeat = models.BooleanField(default=False)
+  repeat = models.BooleanField(default=False, choices=BOOLEAN_CHOICES)
 
   def __str__(self):
     return self.name

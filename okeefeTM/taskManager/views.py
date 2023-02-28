@@ -1,14 +1,13 @@
 from django.shortcuts import render, redirect
+from .models import *
 from django.http import HttpResponse
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages, auth
 from taskManager.models import Task
 from django.contrib.auth.models import User
-from django.contrib.auth import get_user_model
 from .forms import *
 
 # Create your views here.
-
 
 def index(request):
     task = Task.objects.all()
@@ -19,9 +18,8 @@ def index(request):
         if form.is_valid():
             form.save()
     context = {'form': taskform,
-               'task': task}
-    return render(request, 'navbar.html', context)
-
+               'tasks': tasks}
+    return render(request, 'home.html', context)
 
 def register(request):
     User = get_user_model()
