@@ -38,3 +38,9 @@ def register(request):
 def getAllUsers(request):
     user_list = User.objects.all()
     return render(request, 'allusers.html', {'list': user_list})
+
+
+def delete_user(request, username):
+    user_to_delete = User.objects.get(username=username)
+    user_to_delete.delete()
+    return HttpResponse('Delete User Successfully!')
