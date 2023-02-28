@@ -56,6 +56,10 @@ def user_login(request):
 
     return render(request, 'login.html', {'form': form})
 
+def user_logout(request):
+    logout(request)
+    return redirect('login')
+
 def login_test(request):
 
     return render(request, 'logintest.html')

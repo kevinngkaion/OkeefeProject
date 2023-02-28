@@ -48,16 +48,19 @@
         >
             <i class="fas fa-bars"></i>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto align-items-center">
 
+                {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <button class="button-5"
-                    " href="#!"><i class="fas fa-heart pe-2"></i>Manage Account</button>
+                    <a class="button-5"
+                    " href="#!"><i class="fas fa-heart pe-2"></i>Manage Account</a>
                 </li>
                 <li class="nav-item ms-3">
-                    <button class="button-5" role="button" href="#!">Log out</button>
+                    <a class="button-5" role="button" href={% url 'logout' %}>Log out</a>
                 </li>
+                {% endif %}
             </ul>
         </div>
     </div>
