@@ -10,7 +10,10 @@ from .forms import *
 # Create your views here.
 
 def index(request):
-    task = Task.objects.all()
+    return redirect('login')
+
+def home(request):
+    tasks = Task.objects.all()
     taskform = TaskForm
 
     if request.method == 'POST':
@@ -46,7 +49,7 @@ def user_login(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('test')
+                return redirect('home')
             else:
                 form.add_error(None, 'Invalid username or password')
     else:
