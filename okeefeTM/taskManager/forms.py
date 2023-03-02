@@ -1,6 +1,9 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm, widgets
 from .models import Task
+from django import forms
+from django.contrib.auth.models import User
+
 
 class TaskForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -37,6 +40,13 @@ class TaskForm(ModelForm):
             'desc',
             ]
 
+
 class CreateUserForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         fields = UserCreationForm.Meta.fields + ("email", "first_name", "last_name")
+
+
+class MyUserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
