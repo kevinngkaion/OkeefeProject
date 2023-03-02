@@ -1,17 +1,20 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate, login, logout
 from .forms import *
 from .models import *
 from django.http import HttpResponse, HttpResponseRedirect
 from taskManager.models import Task
 from django.contrib.auth.models import User
+from django.contrib import messages, auth
 
 
 # Create your views here.
 
 def index(request):
+    return redirect('login')
+
+def home(request):
     tasks = Task.objects.all()
-    
     taskform = TaskForm
 
     if request.method == 'POST':
@@ -66,4 +69,29 @@ def update_user(request, username):
     context = {'form': form, 'user': user}
     return render(request, 'update_user.html', context)
 
+
+def user_login(request):
+    if request.method == 'POST':
+        form = LoginForm(data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+            else:
+                form.add_error(None, 'Invalid username or password')
+    else:
+        form = LoginForm()
+
+    return render(request, 'login.html', {'form': form})
+
+def user_logout(request):
+    logout(request)
+    return redirect('login')
+
+def login_test(request):
+
+    return render(request, 'logintest.html')
 
