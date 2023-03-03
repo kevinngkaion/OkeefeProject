@@ -13,6 +13,7 @@ from django.contrib import messages, auth
 def index(request):
     return redirect('login')
 
+
 def home(request):
     tasks = Task.objects.all()
     taskform = TaskForm
@@ -52,21 +53,23 @@ def deactivate_user(request, username):
 
 
 def update_user(request, username):
-    user = User.objects.get(User, username=username)
+    user = User.objects.get(username=username)
+    userForm = MyUserUpdateForm
 
     if request.method == 'POST':
         form = MyUserUpdateForm(request.POST)
-
         if form.is_valid():
+            user.username = form.cleaned_data['username']
             user.first_name = form.cleaned_data['first_name']
             user.last_name = form.cleaned_data['last_name']
             user.email = form.cleaned_data['email']
+            # form.save()
             user.save()
             return HttpResponse('User Information Updated successfully')
-    else:
-        form = MyUserUpdateForm(instance=user)
+    # else:
+    #     form = MyUserUpdateForm(instance=user)
 
-    context = {'form': form, 'user': user}
+    context = {'form': userForm, 'user': user}
     return render(request, 'update_user.html', context)
 
 
@@ -87,9 +90,11 @@ def user_login(request):
 
     return render(request, 'login.html', {'form': form})
 
+
 def user_logout(request):
     logout(request)
     return redirect('login')
+
 
 def login_test(request):
 
