@@ -1,16 +1,18 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth import get_user_model, authenticate, login, logout
+from .forms import *
 from .models import *
-from django.http import HttpResponse
-from django.contrib.auth import authenticate, login, logout, get_user_model
-from django.contrib import messages, auth
+from django.http import HttpResponse, HttpResponseRedirect
 from taskManager.models import Task
 from django.contrib.auth.models import User
-from .forms import *
+from django.contrib import messages, auth
+
 
 # Create your views here.
 
 def index(request):
     return redirect('login')
+
 
 def home(request):
     tasks = Task.objects.all()
@@ -20,9 +22,9 @@ def home(request):
         form = TaskForm(request.POST)
         if form.is_valid():
             form.save()
-    context = {'form': taskform,
-               'tasks': tasks}
+    context = {'form': taskform, 'tasks': tasks}
     return render(request, 'home.html', context)
+
 
 def register(request):
     User = get_user_model()
@@ -36,9 +38,40 @@ def register(request):
     context = {'form': userForm}
     return render(request, 'sample.html', context)
 
+
 def getAllUsers(request):
     user_list = User.objects.all()
-    return render(request, 'allusers.html', {'list': user_list})
+    return render(request, 'all_users.html', {'list': user_list})
+
+
+def deactivate_user(request, username):
+    user = User.objects.get(username=username)
+    user.is_active = False
+    user.is_staff = False
+    user.save()
+    return HttpResponse('User deactivated successfully')
+
+
+def update_user(request, username):
+    user = User.objects.get(username=username)
+    userForm = MyUserUpdateForm
+
+    if request.method == 'POST':
+        form = MyUserUpdateForm(request.POST)
+        if form.is_valid():
+            user.username = form.cleaned_data['username']
+            user.first_name = form.cleaned_data['first_name']
+            user.last_name = form.cleaned_data['last_name']
+            user.email = form.cleaned_data['email']
+            # form.save()
+            user.save()
+            return HttpResponse('User Information Updated successfully')
+    # else:
+    #     form = MyUserUpdateForm(instance=user)
+
+    context = {'form': userForm, 'user': user}
+    return render(request, 'update_user.html', context)
+
 
 def user_login(request):
     if request.method == 'POST':
@@ -57,10 +90,13 @@ def user_login(request):
 
     return render(request, 'login.html', {'form': form})
 
+
 def user_logout(request):
     logout(request)
     return redirect('login')
 
+
 def login_test(request):
 
     return render(request, 'logintest.html')
+
