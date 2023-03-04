@@ -51,6 +51,8 @@ class Task(models.Model):
   date_due = models.DateField(null=True, blank=True, default=None)
   date_completed = models.DateField(null=True, blank=True, default=None)
   repeat = models.BooleanField(default=False, choices=BOOLEAN_CHOICES)
+  note = models.CharField(max_length=255, null=True, blank=True)
+  isSeen = models.BooleanField(default=False, choices=BOOLEAN_CHOICES)
 
 
 class Repeating_Task(models.Model):
@@ -76,17 +78,6 @@ class Repeating_Task(models.Model):
 
     def __str__(self):
         return self.task
-
-
-class Comment(models.Model):
-    task = models.ForeignKey(Task, on_delete=models.RESTRICT)
-    user = models.ForeignKey(User, on_delete=models.RESTRICT)
-    time = models.DateTimeField(default=timezone.now())
-    comment = models.TextField()
-
-    def __str__(self):
-        return "Task: " + self.task + " | User: " + self.user + " | Time: " + self.time
-
 
 class Upload(models.Model):
     task = models.ForeignKey(Task, on_delete=models.RESTRICT)
