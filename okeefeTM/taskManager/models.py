@@ -19,40 +19,45 @@ class Category(models.Model):
 
 
 class Task(models.Model):
-  LOW = 0
-  MEDIUM = 1
-  HIGH = 2
-  UNASSIGNED = 0
-  NOT_STARTED = 1
-  IN_PROGRESS = 2
-  COMPLETE = 3
-  PRIORITY_CHOICES = [
-    (LOW, "Low"),
-    (MEDIUM, "Medium"),
-    (HIGH, "High"),
-  ]
-  STATUS_CHOICES = [
-    (UNASSIGNED, "Unassigned"),
-    (NOT_STARTED, "Not Started"),
-    (IN_PROGRESS, "In Progress"),
-    (COMPLETE, "Complete"),
-  ]
-  BOOLEAN_CHOICES = [
-    (True, "Yes"),
-    (False, "No"),
-  ]
-  user = models.ForeignKey(User, on_delete=models.RESTRICT)
-  category = models.ForeignKey(Category, on_delete=models.RESTRICT)
-  name = models.CharField(max_length=150)
-  desc = models.CharField(max_length=255)
-  priority = models.IntegerField(choices=PRIORITY_CHOICES, default=LOW)
-  status = models.IntegerField(choices=STATUS_CHOICES, default=UNASSIGNED)
-  date_created = models.DateField(default=timezone.now())
-  date_due = models.DateField(null=True, blank=True, default=None)
-  date_completed = models.DateField(null=True, blank=True, default=None)
-  repeat = models.BooleanField(default=False, choices=BOOLEAN_CHOICES)
-  note = models.CharField(max_length=255, null=True, blank=True)
-  isSeen = models.BooleanField(default=False, choices=BOOLEAN_CHOICES)
+    LOW = 0
+    MEDIUM = 1
+    HIGH = 2
+    UNASSIGNED = 0
+    NOT_STARTED = 1
+    IN_PROGRESS = 2
+    COMPLETE = 3
+    PRIORITY_CHOICES = [
+        (LOW, "Low"),
+        (MEDIUM, "Medium"),
+        (HIGH, "High"),
+    ]
+    STATUS_CHOICES = [
+        (UNASSIGNED, "Unassigned"),
+        (NOT_STARTED, "Not Started"),
+        (IN_PROGRESS, "In Progress"),
+        (COMPLETE, "Complete"),
+    ]
+    BOOLEAN_CHOICES = [
+      (True, "Yes"),
+      (False, "No"),
+    ]
+    user = models.ForeignKey(User, on_delete=models.RESTRICT)
+    category = models.ForeignKey(Category, on_delete=models.RESTRICT)
+    name = models.CharField(max_length=150)
+    desc = models.CharField(max_length=255)
+    priority = models.IntegerField(choices=PRIORITY_CHOICES, default=LOW)
+    status = models.IntegerField(choices=STATUS_CHOICES, default=UNASSIGNED)
+    date_created = models.DateField(default=timezone.now())
+    date_due = models.DateField(null=True, blank=True, default=None)
+    date_completed = models.DateField(null=True, blank=True, default=None)
+    repeat = models.BooleanField(default=False, choices=BOOLEAN_CHOICES)
+    note = models.CharField(max_length=255, null=True, blank=True)
+    isSeen = models.BooleanField(default=False, choices=BOOLEAN_CHOICES)
+
+    def __str__(self):
+      return self.name
+    
+
 
 
 class Repeating_Task(models.Model):
