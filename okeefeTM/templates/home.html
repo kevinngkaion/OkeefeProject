@@ -45,7 +45,16 @@
                 <tr class="accordion-toggle" data-bs-toggle="collapse" data-bs-target="#row" aria-expanded="false"
                     aria-controls="#row">
                     <th scope="row">{{ task.name }}</th>
-                    <td><div class='task-status rounded-pill text-center'>{{ task.get_status_display }}</div></td>
+                    <td>
+                        <button id="id-status" type="button" class="task-status btn btn-sm dropdown-toggle w-100 text-end" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{task.get_status_display}}
+                        </button>
+                        <ul class="dropdown-menu">
+                            {% for choice in choices %}
+                            <li><a class="dropdown-item" href="#" onclick="changeStatus('{{choice.1}}')">{{choice.1}}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div></td>
                     <td>{{ task.category }}</td>
                     <td>{{ task.user }}</td>
                     <td><div class='task-prio'>{{ task.get_priority_display }}</div></td>

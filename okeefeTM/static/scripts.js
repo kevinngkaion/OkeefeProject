@@ -2,18 +2,18 @@ $(document).ready(function () {
     let tStats = Object.values($('.task-status'))
     let tPrios = Object.values($('.task-prio'))
     tStats.forEach((tStat) => {
-        switch(tStat.textContent){
-            case "Unassigned":
-                tStat.classList.add('bg-secondary');
+        switch(tStat.innerText){
+            case "Unassigned ":
+                tStat.classList.add('btn-secondary');
                 break;
-            case "Complete":
-                tStat.classList.add('bg-success');
+            case "Complete ":
+                tStat.classList.add('btn-success');
                 break;
-            case "In Progress":
-                tStat.classList.add('bg-warning');
+            case "In Progress ":
+                tStat.classList.add('btn-warning');
                 break;
-            case "Not Started":
-                tStat.classList.add('bg-danger');
+            case "Not Started ":
+                tStat.classList.add('btn-danger');
                 break;
         }
     })
@@ -36,4 +36,9 @@ $(document).ready(function () {
 function showTaskInfo(name, description){
     $('#modal-task-name').text(name);
     $('#task-info').text(description);
+}
+
+function changeStatus(newStatus){
+    console.log(newStatus)
+    // TODO: Make AJAX request to send newStatus as the post
 }

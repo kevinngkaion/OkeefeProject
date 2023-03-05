@@ -17,12 +17,19 @@ def index(request):
 def home(request):
     tasks = Task.objects.all()
     taskform = TaskForm
+    task_model = Task()
+    status_choices = task_model._meta.get_field('status').choices
+
 
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():
             form.save()
-    context = {'form': taskform, 'tasks': tasks}
+    context = {
+        'form': taskform,
+        'tasks': tasks,
+        'choices': status_choices,
+        }
     return render(request, 'home.html', context)
 
 

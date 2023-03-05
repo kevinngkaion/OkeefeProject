@@ -1,5 +1,5 @@
 <form action="" class="form p-4" method="post">
-    {% csrf_token %}
-    {{ form }}
-    <button type="submit">submit</button>
+    {% for choice in choices %}
+        <h1> {{choice.1}} </h1>
+    {% endfor %}
 </form>
