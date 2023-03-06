@@ -102,8 +102,4 @@ def user_logout(request):
     logout(request)
     return redirect('login')
 
-
-def login_test(request):
-
-    return render(request, 'logintest.html')
-
+# Removed login_test
