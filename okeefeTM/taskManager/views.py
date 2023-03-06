@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from .forms import *
 from .models import *
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from taskManager.models import Task
 from django.contrib.auth.models import User
 from django.contrib import messages, auth
@@ -102,4 +102,7 @@ def user_logout(request):
     logout(request)
     return redirect('login')
 
-# Removed login_test
+def update_task_status(request):
+    # TODO: Write code to update task status. Request is storing 'taskID' and 'newStatus' as GET parameters
+
+    return JsonResponse({'msg': 'Status of this task has been updated'}, status=200) # Status 200 if successfull.
