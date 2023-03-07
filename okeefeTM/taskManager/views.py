@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from .forms import *
 from .models import *
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from taskManager.models import Task
 from django.contrib.auth.models import User
 from django.contrib import messages, auth
@@ -17,12 +17,19 @@ def index(request):
 def home(request):
     tasks = Task.objects.all()
     taskform = TaskForm
+    task_model = Task()
+    status_choices = task_model._meta.get_field('status').choices
+
 
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():
             form.save()
-    context = {'form': taskform, 'tasks': tasks}
+    context = {
+        'form': taskform,
+        'tasks': tasks,
+        'choices': status_choices,
+        }
     return render(request, 'home.html', context)
 
 
@@ -95,8 +102,7 @@ def user_logout(request):
     logout(request)
     return redirect('login')
 
+def update_task_status(request):
+    # TODO: Write code to update task status. Request is storing 'taskID' and 'newStatus' as GET parameters
 
-def login_test(request):
-
-    return render(request, 'logintest.html')
-
+    return JsonResponse({'msg': 'Status of this task has been updated'}, status=200) # Status 200 if successfull.

@@ -42,10 +42,18 @@
             </thead>
             <tbody id="taskTable">
                 {% for task in tasks %}
-                <tr class="accordion-toggle" data-bs-toggle="collapse" data-bs-target="#row" aria-expanded="false"
-                    aria-controls="#row">
+                <tr id="task{{task.id}}">
                     <th scope="row">{{ task.name }}</th>
-                    <td><div class='task-status rounded-pill text-center'>{{ task.get_status_display }}</div></td>
+                    <td>
+                        <button type="button" class="task-status btn btn-sm dropdown-toggle w-100 text-end" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{task.get_status_display}}
+                        </button>
+                        <ul class="dropdown-menu">
+                            {% for choice in choices %}
+                            <li><button class="dropdown-item" onclick="changeStatus({{task.id}}, '{{choice.1}}')">{{choice.1}}</button></li>
+                            {% endfor %}
+                        </ul>
+                    </div></td>
                     <td>{{ task.category }}</td>
                     <td>{{ task.user }}</td>
                     <td><div class='task-prio'>{{ task.get_priority_display }}</div></td>
