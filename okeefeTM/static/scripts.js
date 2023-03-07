@@ -1,39 +1,73 @@
 $(document).ready(function () {
-    let tStats = Object.values($('.task-status'))
-    let tPrios = Object.values($('.task-prio'))
-    tStats.forEach((tStat) => {
-        switch(tStat.textContent){
-            case "Unassigned":
-                tStat.classList.add('bg-secondary');
-                break;
-            case "Complete":
-                tStat.classList.add('bg-success');
-                break;
-            case "In Progress":
-                tStat.classList.add('bg-warning');
-                break;
-            case "Not Started":
-                tStat.classList.add('bg-danger');
-                break;
-        }
-    })
-    tPrios.forEach((tPrio) => {
-        switch(tPrio.textContent){
-            case "Low":
-                tPrio.classList.add('text-success');
-                break;
-            case "Medium":
-                tPrio.classList.add('text-warning');
-                break;
-            case "High":
-                tPrio.classList.add('text-danger');
-                break;
-        }
-    })
+    // Set colours for task status
+    let tStats = $("#tasksTable .task-status");
+    for (let i = 0; i < tStats.length; i++){
+        setStatusColor($(tStats[i]));
+    }
+
+    let tPrios = $('#tasksTable .task-prio');
+    for (let i = 0; i < tPrios.length; i++){
+        setPrioColor($(tPrios[i]));
+    }
+
     $('#tasksTable').DataTable(); //This needs to be at the end so that the formatting can be done first before the table is output
 });
+
+function setStatusColor(tStat){// tStat is a jQuery obj
+    // remove all btn colour styling first
+    tStat.removeClass("btn-secondary btn-success btn-warning btn-danger");
+    // remove all spaces in the text
+    let statusTxt = tStat.text().replace(/\s+/g, "");
+    switch(statusTxt){
+        case "Unassigned":
+            tStat.addClass('btn-secondary');
+            break;
+        case "Complete":
+            tStat.addClass('btn-success');
+            break;
+        case "InProgress":
+            tStat.addClass('btn-warning');
+            break;
+        case "NotStarted":
+            tStat.addClass('btn-danger');
+            break;
+    }
+}
+
+function setPrioColor(tPrio){ //tPrio is a jQuery object
+    // remove all the text color styling first
+    tPrio.removeClass("text-success text-warning text-danger");
+    switch(tPrio.text()){
+        case "Low":
+            tPrio.addClass('text-success');
+            break;
+        case "Medium":
+            tPrio.addClass('text-warning');
+            break;
+        case "High":
+            tPrio.addClass('text-danger');
+            break;
+    }
+}
 
 function showTaskInfo(name, description){
     $('#modal-task-name').text(name);
     $('#task-info').text(description);
+}
+
+function changeStatus(taskId, newStatus){
+    // TODO: Make AJAX request to send newStatus as the post
+    $.ajax({
+        url: 'update_task_status',
+        type: 'get',
+        data: {
+            taskId: taskId,
+            newStatus: newStatus
+        },
+        success: (response) => {
+            let taskStatus = $("#task" + taskId + " .task-status");
+            taskStatus.text(newStatus + " ");
+            setStatusColor(taskStatus);
+        }
+    });
 }
