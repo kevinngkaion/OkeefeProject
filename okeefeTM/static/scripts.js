@@ -51,12 +51,24 @@ function setPrioColor(tPrio){ //tPrio is a jQuery object
 }
 
 function showTaskInfo(name, description){
-    $('#modal-task-name').text(name);
-    $('#task-info').text(description);
+    let desc = $('#id_desc');
+    $('#modalHeaderViewTask').text(name);
+    $('#id_user').val(2); // 2 is kevin
+    $('#id_user').prop("disabled", true);
+    desc.val(description);
+    desc.prop("disabled", true);
+
+    // $('#task-info').text(description);
+}
+
+function enableEdit(){
+    let desc = $('#id_desc');
+    let assignedTo = $('#id_user');
+    desc.prop("disabled", false);
+    assignedTo.prop("disabled", false);
 }
 
 function changeStatus(taskId, newStatus){
-    // TODO: Make AJAX request to send newStatus as the post
     $.ajax({
         url: 'update_task_status',
         type: 'get',
@@ -68,6 +80,7 @@ function changeStatus(taskId, newStatus){
             let taskStatus = $("#task" + taskId + " .task-status");
             taskStatus.text(newStatus + " ");
             setStatusColor(taskStatus);
+            console.log(response);
         }
     });
 }
