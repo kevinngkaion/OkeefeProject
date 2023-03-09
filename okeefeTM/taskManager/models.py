@@ -17,7 +17,6 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-
 class Task(models.Model):
     LOW = 0
     MEDIUM = 1
@@ -41,7 +40,7 @@ class Task(models.Model):
       (True, "Yes"),
       (False, "No"),
     ]
-    user = models.ForeignKey(User, on_delete=models.RESTRICT)
+    user = models.ForeignKey(User, on_delete=models.RESTRICT, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.RESTRICT)
     name = models.CharField(max_length=150)
     desc = models.CharField(max_length=255)
@@ -56,9 +55,6 @@ class Task(models.Model):
 
     def __str__(self):
       return self.name
-    
-
-
 
 class Repeating_Task(models.Model):
     DAILY = "Day"
@@ -74,8 +70,8 @@ class Repeating_Task(models.Model):
         (BIWEEKLY, "Biweekly"),
         (MONTHLY, "Monthly"),
         (QUARTERLY, "Quarterly"),
-        (SEMI_ANNUAL, "Semiannualy"),
-        (ANNUAL, "Annualy"),
+        (SEMI_ANNUAL, "Semiannually"),
+        (ANNUAL, "Annually"),
     ]
     task = models.ForeignKey(Task, on_delete=models.RESTRICT)
     interval = models.CharField(max_length=10, choices=INTERVAL_CHOICES)

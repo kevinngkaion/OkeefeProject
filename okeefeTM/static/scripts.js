@@ -55,18 +55,18 @@ function showTaskInfo(name, description){
     $('#task-info').text(description);
 }
 
-function changeStatus(taskId, newStatus){
+function changeStatus(taskID, newStatusID, newStatusName){
     // TODO: Make AJAX request to send newStatus as the post
     $.ajax({
         url: 'update_task_status',
         type: 'get',
         data: {
-            taskId: taskId,
-            newStatus: newStatus
+            taskID: taskID,
+            newStatusID: newStatusID
         },
         success: (response) => {
             let taskStatus = $("#task" + taskId + " .task-status");
-            taskStatus.text(newStatus + " ");
+            taskStatus.text(newStatusName + " ");
             setStatusColor(taskStatus);
         }
     });

@@ -50,10 +50,12 @@
                         </button>
                         <ul class="dropdown-menu">
                             {% for choice in choices %}
-                            <li><button class="dropdown-item" onclick="changeStatus({{task.id}}, '{{choice.1}}')">{{choice.1}}</button></li>
+                            {% if choice.0 != 0 %}
+                            <li><button class="dropdown-item" onclick="changeStatus({{task.id}}, {{choice.0}}, '{{choice.1}}')">{{choice.1}}</button></li>
+                            {% endif %}
                             {% endfor %}
                         </ul>
-                    </div></td>
+                    </td>
                     <td>{{ task.category }}</td>
                     <td>{{ task.user }}</td>
                     <td><div class='task-prio'>{{ task.get_priority_display }}</div></td>
