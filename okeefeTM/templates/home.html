@@ -84,32 +84,7 @@
                 {% csrf_token %}
                 <div class="modal-body">
                     <!-- Looping through the form fields-->
-                    {% for field in editform %}
-                    <!-- Group every 2 fields together into a div -->
-                    {% if forloop.counter0|divisibleby:2 %}
-                        <div class="row d-flex flex-wrap justify-content-between mb-3">
-                            <!-- Give the description its own row -->
-                            {% if field.label == 'Description' %}
-                            <div class="col mx-4">
-                                {{field.label}}
-                                {{field}}
-                            </div>
-                            {% else %}
-                            <div class="col-11 col-md-5 mx-4">
-                                {{field.label}}
-                                {{field}}
-                            </div>
-                            {% endif %}
-                        
-                    {% else %}
-                        <div class="col-11 col-md-5 mx-4">
-                            {{field.label}}
-                            {{field}}
-                        </div>
-                    </div>
-                    {% endif %}
-                    {% endfor %}
-                    </div> <!-- This div is to close the last filed of the form -->
+                    {{ editform.as_p }}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-lg" onclick="enableEdit()">Edit</button>

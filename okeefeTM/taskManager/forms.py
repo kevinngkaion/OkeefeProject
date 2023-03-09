@@ -52,6 +52,8 @@ class EditTaskForm(ModelForm):
         self.fields['desc'].widget = widgets.Textarea(
             attrs={'class': 'form-control', 'rows': '5'}
         )
+        self.fields['status'].widget.attrs['class'] = 'form-select'
+        self.fields['note'].widget.attrs['class'] = 'form-control'
 
     class Meta:
         model = Task
@@ -61,7 +63,7 @@ class EditTaskForm(ModelForm):
             'desc': 'Description',
             'date_due': 'Date Due',
             'repeat': 'Is this a recurring task?',
-            'notes': 'note'
+            'note': 'Notes'
             }
         fields = [
             'status',
