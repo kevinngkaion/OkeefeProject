@@ -17,7 +17,6 @@ def index(request):
 def home(request):
     tasks = Task.objects.all()
     taskform = TaskForm
-    taskform2 = TaskForm
     task_model = Task()
     status_choices = task_model._meta.get_field('status').choices
 
@@ -28,7 +27,6 @@ def home(request):
             form.save()
     context = {
         'form': taskform,
-        'form2': taskform2,
         'tasks': tasks,
         'choices': status_choices,
         }

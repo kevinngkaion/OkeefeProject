@@ -59,7 +59,7 @@
                     <td><div class='task-prio'>{{ task.get_priority_display }}</div></td>
                     <td>{{ task.date_created }}</td>
                     <td>{{ task.date_due }}</td>
-                    <td class="text-center"><button class="btn btn-primary text-light" data-bs-toggle="modal" data-bs-target="#modalViewTask" onclick="showTaskInfo('{{task.name}}', '{{task.desc}}')">View Task</button></td>
+                    <td class="text-center"><button class="btn btn-primary text-light" data-bs-toggle="modal" data-bs-target="#modalViewTask" onclick="showTaskInfo('{{ task.name }}', {{task.status}}, {{task.category.id}}, {{task.user.id}}, {{task.priority}}, '{{task.date_created}}', '{{task.date_due}}', '{{task.desc}}', '{{task.repeat}}')">View Task</button></td>
                 </tr>
                 {% endfor %}
             </tbody>

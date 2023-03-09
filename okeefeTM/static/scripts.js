@@ -50,22 +50,45 @@ function setPrioColor(tPrio){ //tPrio is a jQuery object
     }
 }
 
-function showTaskInfo(name, description){
+function showTaskInfo(tName, tStatus, tCat, tUser, tPrio, tCreated, tDue, tDesc, tRepeat){
     let desc = $('#id_desc');
-    $('#modalHeaderViewTask').text(name);
-    $('#id_user').val(2); // 2 is kevin
-    $('#id_user').prop("disabled", true);
-    desc.val(description);
+    let title = $('#modalHeaderViewTask');
+    let user = $('#id_user');
+    let status = $('#id_status');
+    let name = $('#id_name');
+    let category = $('#id_category')
+    let prio = $('#id_priority');
+    let due = $('#id_date_due');
+    let repeat = $('#id_repeat')
+    let date = new Date(tDue);
+    let dueDate = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+    desc.val(tDesc);
+    title.html(tName);
+    user.val(tUser);
+    name.val(tName);
+    category.val(tCat);
+    prio.val(tPrio);
+    due.val(dueDate);
+    repeat.val(tRepeat);
+    name.prop("disabled", true);
+    user.prop("disabled", true);
+    category.prop("disabled", true);
+    prio.prop("disabled", true);
+    due.prop("disabled", true);
+    repeat.prop("disabled", true);
     desc.prop("disabled", true);
-
-    // $('#task-info').text(description);
 }
 
 function enableEdit(){
-    let desc = $('#id_desc');
-    let assignedTo = $('#id_user');
-    desc.prop("disabled", false);
-    assignedTo.prop("disabled", false);
+    $('#id_desc').prop("disabled", false);
+    $('#modalHeaderViewTask').prop("disabled", false);
+    $('#id_user').prop("disabled", false);
+    $('#id_status').prop("disabled", false);
+    $('#id_name').prop("disabled", false);
+    $('#id_category').prop("disabled", false);
+    $('#id_priority').prop("disabled", false);
+    $('#id_date_due').prop("disabled", false);
+    $('#id_repeat').prop("disabled", false);
 }
 
 function changeStatus(taskId, newStatus){
