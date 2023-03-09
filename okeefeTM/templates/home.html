@@ -84,7 +84,7 @@
                 {% csrf_token %}
                 <div class="modal-body">
                     <!-- Looping through the form fields-->
-                    {% for field in form %}
+                    {% for field in editform %}
                     <!-- Group every 2 fields together into a div -->
                     {% if forloop.counter0|divisibleby:2 %}
                         <div class="row d-flex flex-wrap justify-content-between mb-3">
@@ -134,7 +134,7 @@
                 {% csrf_token %}
                 <div class="modal-body">
                     <!-- Looping through the form fields-->
-                    {% for field in form %}
+                    {% for field in createform %}
                     <!-- Group every 2 fields together into a div -->
                     {% if forloop.counter0|divisibleby:2 %}
                         <div class="row d-flex flex-wrap justify-content-between mb-3">

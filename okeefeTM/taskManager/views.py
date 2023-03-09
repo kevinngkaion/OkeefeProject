@@ -15,16 +15,21 @@ def index(request):
 
 def home(request):
     tasks = Task.objects.all()
-    taskform = TaskForm
+    createtaskform = TaskForm
+    edittaskform = EditTaskForm
     task_model = Task()
     status_choices = task_model._meta.get_field('status').choices
 
     if request.method == 'POST':
-        form = TaskForm(request.POST)
-        if form.is_valid():
-            form.save()
+        create_form = TaskForm(request.POST)
+        edit_form = EditTaskForm(request.POST)
+        if create_form.is_valid():
+            create_form.save()
+        if edit_form.is_valid():
+            edit_form.save()
     context = {
-        'form': taskform,
+        'createform': createtaskform,
+        'editform': edittaskform,
         'tasks': tasks,
         'choices': status_choices,
     }
@@ -102,7 +107,7 @@ def user_logout(request):
 
 def update_task_status(request):
     # TODO: Write code to update task status. Request is storing 'taskID' and 'newStatusID' as GET parameters
-    print(request.GET.get("newStatusID"))
+    # print(request.GET.get("newStatusID"))
     task = Task.objects.get(id=request.GET.get("taskID"))
     task.status = request.GET.get("newStatusID")
     task.save()
