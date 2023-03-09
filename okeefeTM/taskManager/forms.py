@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate
-from django.forms import ModelForm, widgets
+from django.forms import ModelForm, widgets, ValidationError
 from .models import Task
 from django import forms
 from django.contrib.auth.models import User
@@ -66,11 +66,10 @@ class LoginForm(AuthenticationForm):
             user = authenticate(username=email, password=password)
 
             if user is None:
-                raise forms.ValidationError(
+                raise ValidationError(
                     "Invalid email or password. Please try again."
                 )
-            elif not user.is_active:
-                raise forms.ValidationError("This account is inactive.")
+
         return self.cleaned_data
 
 
@@ -78,3 +77,6 @@ class MyUserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'email']
+
+
+
