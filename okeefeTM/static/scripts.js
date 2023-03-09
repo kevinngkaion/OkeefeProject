@@ -50,10 +50,47 @@ function setPrioColor(tPrio){ //tPrio is a jQuery object
     }
 }
 
-function showTaskInfo(name, description){
-    $('#modal-task-name').text(name);
-    $('#task-info').text(description);
+function showTaskInfo(tName, tStatus, tCat, tUser, tPrio, tCreated, tDue, tDesc, tRepeat){
+    let desc = $('#id_desc');
+    let title = $('#modalHeaderViewTask');
+    let user = $('#id_user');
+    let status = $('#id_status');
+    let name = $('#id_name');
+    let category = $('#id_category')
+    let prio = $('#id_priority');
+    let due = $('#id_date_due');
+    let repeat = $('#id_repeat')
+    let date = new Date(tDue);
+    let dueDate = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+    desc.val(tDesc);
+    title.html(tName);
+    user.val(tUser);
+    name.val(tName);
+    category.val(tCat);
+    prio.val(tPrio);
+    due.val(dueDate);
+    repeat.val(tRepeat);
+    name.prop("disabled", true);
+    user.prop("disabled", true);
+    category.prop("disabled", true);
+    prio.prop("disabled", true);
+    due.prop("disabled", true);
+    repeat.prop("disabled", true);
+    desc.prop("disabled", true);
 }
+
+function enableEdit(){
+    $('#id_desc').prop("disabled", false);
+    $('#modalHeaderViewTask').prop("disabled", false);
+    $('#id_user').prop("disabled", false);
+    $('#id_status').prop("disabled", false);
+    $('#id_name').prop("disabled", false);
+    $('#id_category').prop("disabled", false);
+    $('#id_priority').prop("disabled", false);
+    $('#id_date_due').prop("disabled", false);
+    $('#id_repeat').prop("disabled", false);
+}
+
 
 function changeStatus(taskID, newStatusID, newStatusName){
     // TODO: Make AJAX request to send newStatus as the post
@@ -68,6 +105,7 @@ function changeStatus(taskID, newStatusID, newStatusName){
             let taskStatus = $("#task" + taskId + " .task-status");
             taskStatus.text(newStatusName + " ");
             setStatusColor(taskStatus);
+            console.log(response);
         }
     });
 }
