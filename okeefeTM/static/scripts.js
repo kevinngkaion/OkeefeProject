@@ -50,7 +50,21 @@ function setPrioColor(tPrio){ //tPrio is a jQuery object
     }
 }
 
-function showTaskInfo(tName, tStatus, tCat, tUser, tPrio, tCreated, tDue, tDesc, tRepeat){
+function showTaskInfo(tID, tName, tStatus, tCat, tUser, tPrio, tCreated, tDue, tDesc, tRepeat, tNote){
+    $.ajax({
+        url: 'mark_as_seen',
+        type: 'get',
+        data: {
+            taskID: tID,
+            tUID: tUser
+        },
+        success: (response) => {
+            console.log(response);
+        }
+    });
+    let note = $('#id_note');
+    let stat = $('#id_status');
+    let id = $('#id_id');
     let desc = $('#id_desc');
     let title = $('#modalHeaderViewTask');
     let user = $('#id_user');
@@ -62,6 +76,9 @@ function showTaskInfo(tName, tStatus, tCat, tUser, tPrio, tCreated, tDue, tDesc,
     let repeat = $('#id_repeat')
     let date = new Date(tDue);
     let dueDate = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+    note.val(tNote);
+    id.val(tID);
+    stat.val(tStatus);
     desc.val(tDesc);
     title.html(tName);
     user.val(tUser);
@@ -70,30 +87,32 @@ function showTaskInfo(tName, tStatus, tCat, tUser, tPrio, tCreated, tDue, tDesc,
     prio.val(tPrio);
     due.val(dueDate);
     repeat.val(tRepeat);
+    id.prop("hidden", true);
+    note.prop("readonly", true)
+    stat.prop("disabled", true);
     name.prop("disabled", true);
     user.prop("disabled", true);
     category.prop("disabled", true);
     prio.prop("disabled", true);
     due.prop("disabled", true);
     repeat.prop("disabled", true);
-    desc.prop("disabled", true);
+    desc.prop("readonly", true);
 }
 
-function enableEdit(){
-    $('#id_desc').prop("disabled", false);
-    $('#modalHeaderViewTask').prop("disabled", false);
-    $('#id_user').prop("disabled", false);
-    $('#id_status').prop("disabled", false);
-    $('#id_name').prop("disabled", false);
-    $('#id_category').prop("disabled", false);
-    $('#id_priority').prop("disabled", false);
-    $('#id_date_due').prop("disabled", false);
-    $('#id_repeat').prop("disabled", false);
+function toggleEdit(){
+    $('#id_desc').prop("readonly", !$('#id_desc').prop("readonly"));
+    $('#id_note').prop("readonly", !$('#id_note').prop("readonly"));
+    $('#id_user').prop("disabled", !$('#id_user').prop("disabled"));
+    $('#id_status').prop("disabled", !$('#id_status').prop("disabled"));
+    $('#id_name').prop("disabled", !$('#id_name').prop("disabled"));
+    $('#id_category').prop("disabled", !$('#id_category').prop("disabled"));
+    $('#id_priority').prop("disabled", !$('#id_priority').prop("disabled"));
+    $('#id_date_due').prop("disabled", !$('#id_date_due').prop("disabled"));
+    $('#id_repeat').prop("disabled", !$('#id_repeat').prop("disabled"));
+    $('#save_edit').prop("disabled", !$('#save_edit').prop("disabled"));
 }
-
 
 function changeStatus(taskID, newStatusID, newStatusName){
-    // TODO: Make AJAX request to send newStatus as the post
     $.ajax({
         url: 'update_task_status',
         type: 'get',

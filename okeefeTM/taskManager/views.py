@@ -15,26 +15,47 @@ def index(request):
 
 def home(request):
     tasks = Task.objects.all()
-    createtaskform = TaskForm
-    edittaskform = EditTaskForm
     task_model = Task()
+    createtask = TaskForm
+    edittask = EditTaskForm
     status_choices = task_model._meta.get_field('status').choices
 
-    if request.method == 'POST':
-        create_form = TaskForm(request.POST)
-        edit_form = EditTaskForm(request.POST)
-        if create_form.is_valid():
-            create_form.save()
-        if edit_form.is_valid():
-            edit_form.save()
     context = {
-        'createform': createtaskform,
-        'editform': edittaskform,
+        'createform': createtask,
+        'editform': edittask,
         'tasks': tasks,
         'choices': status_choices,
     }
     return render(request, 'home.html', context)
 
+
+def create_task(request):
+    createtaskForm = TaskForm
+    if request.method == "POST":
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            form.save()
+    return redirect('home')
+
+
+def edit_task(request):
+    print("edit task")
+    if request.method == "POST":
+        edittask = Task.objects.get(id=request.POST.get("id"))
+        edittask.note = request.POST.get("note")
+        edittask.desc = request.POST.get("desc")
+        edittask.user = User.objects.get(id=request.POST.get("user"))
+        edittask.priority = request.POST.get("priority")
+        if (request.POST.get("date_due") != ""):
+            edittask.date_due = request.POST.get("date_due")
+        edittask.repeat = request.POST.get("repeat")
+        edittask.category = Category.objects.get(id=request.POST.get("category"))
+        edittask.save()
+        print(request.POST)
+        return redirect('home')
+    else:
+        print("No good")
+        return redirect('home')
 
 def register(request):
     User = get_user_model()
@@ -105,6 +126,7 @@ def user_logout(request):
     logout(request)
     return redirect('login')
 
+
 def update_task_status(request):
     # TODO: Write code to update task status. Request is storing 'taskID' and 'newStatusID' as GET parameters
     # print(request.GET.get("newStatusID"))
@@ -112,3 +134,14 @@ def update_task_status(request):
     task.status = request.GET.get("newStatusID")
     task.save()
     return JsonResponse({'msg': 'Status of this task has been updated'}, status=200)  # Status 200 if successfull.
+def mark_as_seen(request):
+    if User.objects.get(id=request.GET.get("tUID")) == request.user:
+        print("Its you")
+        seentask = Task.objects.get(id=request.GET.get("taskID"))
+        if not seentask.isSeen:
+            seentask.isSeen = True
+            seentask.save()
+        return JsonResponse({"msg": "somejt"}, status=200)
+    else:
+        print("Not you at all")
+        return JsonResponse({"msg": 'not you'}, status=111)

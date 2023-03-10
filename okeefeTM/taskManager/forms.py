@@ -40,6 +40,7 @@ class TaskForm(ModelForm):
             ]
 
 class EditTaskForm(ModelForm):
+    id = forms.IntegerField()
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['user'].widget.attrs['class'] = 'form-select'
@@ -53,8 +54,9 @@ class EditTaskForm(ModelForm):
             attrs={'class': 'form-control', 'rows': '5'}
         )
         self.fields['status'].widget.attrs['class'] = 'form-select'
-        self.fields['note'].widget.attrs['class'] = 'form-control'
-
+        self.fields['note'].widget = widgets.Textarea(
+            attrs={'class': 'form-control', 'rows': '3'}
+        )
     class Meta:
         model = Task
         labels = {
@@ -66,6 +68,7 @@ class EditTaskForm(ModelForm):
             'note': 'Notes'
             }
         fields = [
+            'id',
             'status',
             'user',
             'category',

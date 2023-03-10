@@ -14,6 +14,9 @@ urlpatterns = [
   path('logout/', views.user_logout, name='logout'),
   path('home', views.home, name='home'),
   path('update_task_status', views.update_task_status, name='update_task_status'),
-  ]
+  path('edit_task', views.edit_task, name='edit_task'),
+  path('create_task', views.create_task, name='create_task'),
+  path('mark_as_seen', views.mark_as_seen, name='mark_as_seen')
+]
 
 
