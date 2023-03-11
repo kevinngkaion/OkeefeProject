@@ -71,3 +71,36 @@ function changeStatus(taskId, newStatus){
         }
     });
 }
+
+function enableEdit(){
+    $("#id_first_name").removeAttr("disabled");
+    $("#id_last_name").removeAttr("disabled");
+    $("#id_email").removeAttr("disabled");
+    $("#edit_user_save_button").removeAttr("disabled");
+}
+
+// function confirmDelete(username, url) {
+//     if (window.confirm("Are you sure you want to delete user " + username + "?")) {
+//         window.location.href = url;
+//     } else {
+//         alert("Delete action cancelled.");
+//     }
+// }
+function confirmDelete(event, username, url) {
+    event.preventDefault(); // prevent default link behavior
+    if (window.confirm("Are you sure you want to delete user " + username + "?")) {
+        window.location.href = url;
+    } else {
+        alert("Delete action cancelled.");
+    }
+}
+
+function confirmSetManager(event, username, url) {
+    event.preventDefault(); // prevent default link behavior
+    if (window.confirm("Are you sure you want to set " + username + "as a manager?")) {
+        window.location.href = url;
+    } else {
+        alert("Set manager cancelled.");
+    }
+}
+

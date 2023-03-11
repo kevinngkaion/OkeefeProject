@@ -53,7 +53,7 @@
                             <li><button class="dropdown-item" onclick="changeStatus({{task.id}}, '{{choice.1}}')">{{choice.1}}</button></li>
                             {% endfor %}
                         </ul>
-                    </div></td>
+                    </td>
                     <td>{{ task.category }}</td>
                     <td>{{ task.user }}</td>
                     <td><div class='task-prio'>{{ task.get_priority_display }}</div></td>
@@ -122,7 +122,7 @@
                             {{field.label}}
                             {{field}}
                         </div>
-                    </div>
+                        </div>
                     {% endif %}
                     {% endfor %}
                 </div>
@@ -134,4 +134,5 @@
         </div>
     </div>
 </div>
+
 {% endblock %}

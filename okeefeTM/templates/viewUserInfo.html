@@ -1,0 +1,49 @@
+{% extends 'navbar.html' %}
+
+{% block content %}
+<!-- Task Dashboard Begins Here -->
+<div class="container container-lg mt-5">
+    <!-- Welcome -->
+    <div class="text-center">
+        <h1>Welcome, {{current_user.first_name}}</h1> <!-- INSERT USER's NAME HERE -->
+    </div>
+
+    <div class="container bg-body mt-5 p-4 border shadow-sm px-4 rounded">
+        <!-- USER EDIT BAR -->
+        <div id="user_edit_bar" class="d-flex justify-content-between mt-1 mb-4">
+            {% if current_user.is_staff %}
+            <div class="col-2 d-flex justify-content-end">
+                <!-- Reset Password -->
+                <a href="{% url 'resetPassword' user.username %}">
+                    <button class="btn btn-primary text-light text-uppercase" type="button">Reset Password</button>
+                </a>
+                <!-- Delete User -->
+                <a href="{% url 'deactivate' user.username %}">
+                    <button class="btn btn-primary text-light text-uppercase" type="button"
+                        onclick="confirmDelete(event, '{{ user.username }}', '{% url "deactivate" user.username %}')">Delete User
+                    </button>
+                </a>
+                <!-- Set as Manager -->
+                <a href="{% url 'set_manager' user.username %}">
+                    <button class="btn btn-primary text-light text-uppercase" type="button"
+                        onclick="confirmSetManager(event, '{{ user.username }}', '{% url "set_manager" user.username %}')">Set as Manager
+                    </button>
+                </a>
+            </div>
+            {% endif %}
+            <div class="col d-flex justify-content-end">
+                <!-- Enable form editing -->
+                <button class="btn btn-primary text-light text-uppercase" type="button" onclick="enableEdit()">Edit</button>
+            </div>
+        </div>
+        <form action="{% url 'update' user.username %}" class="form p-4" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <!-- Save modification -->
+                <input id="edit_user_save_button" class="btn btn-primary text-light text-uppercase" type="submit" value="Save">
+        </form>
+    </div>
+</div>
+<!-- User Dashboard Ends -->
+
+{% endblock %}
