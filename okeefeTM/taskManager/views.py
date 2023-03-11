@@ -6,6 +6,9 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from taskManager.models import Task
 from django.contrib.auth.models import User
 from django.contrib import messages, auth
+from django.utils import timezone
+from datetime import date, timedelta
+from dateutil.relativedelta import relativedelta
 
 
 # Create your views here.
@@ -15,6 +18,7 @@ def index(request):
 
 
 def home(request):
+    createRepeatingTasks()
     tasks = Task.objects.all()
     taskform = TaskForm
     task_model = Task()
@@ -32,6 +36,42 @@ def home(request):
         }
     return render(request, 'home.html', context)
 
+def createRepeatingTasks():
+    repeatingTasks = Task.objects.filter(repeat=True).exclude(date_completed=None)
+    for task in repeatingTasks:
+        interval = task.interval
+        length = task.intervalLength
+        if interval == "Daily":
+            nextDate = task.date_completed + timedelta(days=length)
+        elif interval == "Weekly":
+            nextDate = task.date_completed + timedelta(weeks=length)
+        elif interval == "Monthly":
+            nextDate = task.date_completed + relativedelta(months=length)
+        elif interval == "Yearly":
+            nextDate = task.date_compelted + relativedelta(years=length)
+
+        # Check if nextDate is today
+        if nextDate - timedelta(days=1) == date.today():
+            # Clone that task into the task model as a new task
+            print("Cloning Task")
+            new_task = Task()
+            new_task.id = None
+            new_task.name = task.name
+            new_task.user = User.objects.get(username="carolyn") #Set the user to Carolyn
+            new_task.category = task.category
+            new_task.priority = task.priority
+            new_task.date_due = None
+            new_task.repeat = task.repeat
+            new_task.interval = task.interval
+            new_task.intervalLength = task.intervalLength
+            new_task.note = None
+            new_task.desc = task.desc
+            new_task.date_created = date.today()
+            new_task.date_completed = None
+            new_task.status = 0 #Set the new task status to unassigned
+            new_task.save() #save the new task
+            print("Cloning complete")
+    return
 
 def register(request):
     User = get_user_model()

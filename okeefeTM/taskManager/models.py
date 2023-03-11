@@ -26,6 +26,10 @@ class Task(models.Model):
     NOT_STARTED = 1
     IN_PROGRESS = 2
     COMPLETE = 3
+    DAILY = "Daily"
+    WEEKLY = "Weekly"
+    MONTHLY = "Monthly"
+    ANNUAL = "Annual"
     PRIORITY_CHOICES = [
         (LOW, "Low"),
         (MEDIUM, "Medium"),
@@ -41,6 +45,12 @@ class Task(models.Model):
       (True, "Yes"),
       (False, "No"),
     ]
+    INTERVAL_CHOICES = [
+        (DAILY, "Every Day"),
+        (WEEKLY, "Every Week"),
+        (MONTHLY, "Every Month"),
+        (ANNUAL, "Every Year"),
+    ] 
     user = models.ForeignKey(User, on_delete=models.RESTRICT)
     category = models.ForeignKey(Category, on_delete=models.RESTRICT)
     name = models.CharField(max_length=150)
@@ -53,36 +63,15 @@ class Task(models.Model):
     repeat = models.BooleanField(default=False, choices=BOOLEAN_CHOICES)
     note = models.CharField(max_length=255, null=True, blank=True)
     isSeen = models.BooleanField(default=False, choices=BOOLEAN_CHOICES)
+    interval = models.CharField(max_length=10, choices=INTERVAL_CHOICES, null=True, blank=True)
+    intervalLength = models.IntegerField(null=True, blank=True)
+
 
     def __str__(self):
       return self.name
     
 
-
-
-class Repeating_Task(models.Model):
-    DAILY = "Day"
-    WEEKLY = "Week"
-    BIWEEKLY = "BiWeek"
-    MONTHLY = "Month"
-    QUARTERLY = "Quart"
-    SEMI_ANNUAL = "BiAnn"
-    ANNUAL = "Ann"
-    INTERVAL_CHOICES = [
-        (DAILY, "Daily"),
-        (WEEKLY, "Weekly"),
-        (BIWEEKLY, "Biweekly"),
-        (MONTHLY, "Monthly"),
-        (QUARTERLY, "Quarterly"),
-        (SEMI_ANNUAL, "Semiannualy"),
-        (ANNUAL, "Annualy"),
-    ]
-    task = models.ForeignKey(Task, on_delete=models.RESTRICT)
-    interval = models.CharField(max_length=10, choices=INTERVAL_CHOICES)
-    length = models.IntegerField()
-
-    def __str__(self):
-        return self.task
+# DELETED THE REPEATING_TASKS MODEL
 
 class Upload(models.Model):
     task = models.ForeignKey(Task, on_delete=models.RESTRICT)

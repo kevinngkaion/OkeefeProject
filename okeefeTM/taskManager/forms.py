@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 
 
 class TaskForm(ModelForm):    
+    # This is for the styling of the form fields
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -21,6 +22,9 @@ class TaskForm(ModelForm):
         self.fields['desc'].widget = widgets.Textarea(
             attrs={'class': 'form-control', 'rows': '5'}
         )
+        self.fields['interval'].widget.attrs['class'] = 'form-select'
+        self.fields['intervalLength'].widget.attrs['class'] = 'form-control'
+
 
     class Meta:
         model = Task
@@ -38,6 +42,8 @@ class TaskForm(ModelForm):
             'priority',
             'date_due',
             'repeat',
+            'interval',
+            'intervalLength',
             'desc',
             ]
 
