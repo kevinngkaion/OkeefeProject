@@ -46,10 +46,11 @@ class Task(models.Model):
       (False, "No"),
     ]
     INTERVAL_CHOICES = [
-        (DAILY, "Every Day"),
-        (WEEKLY, "Every Week"),
-        (MONTHLY, "Every Month"),
-        (ANNUAL, "Every Year"),
+        ('', 'Interval'),
+        (DAILY, "Day(s)"),
+        (WEEKLY, "Week(s)"),
+        (MONTHLY, "Month(s)"),
+        (ANNUAL, "Year(s)"),
     ] 
     user = models.ForeignKey(User, on_delete=models.RESTRICT)
     category = models.ForeignKey(Category, on_delete=models.RESTRICT)

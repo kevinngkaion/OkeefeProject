@@ -10,6 +10,25 @@ $(document).ready(function () {
         setPrioColor($(tPrios[i]));
     }
 
+    // on change for is this a recurring task
+    $('#formCreateTask').on('change', '#id_repeat_create', function() {
+        intervalLength = $('#id_intervalLength_create');
+        interval = $('#id_interval_create');
+        divInterval = $('#id_repeat_interval_create');
+        repeat = $('#id_repeat_create');
+        // Toggle the disabled and visible properties for the fields and their parent div
+        if(repeat.val() == "True"){
+            interval.prop('disabled', false);
+            intervalLength.prop('disabled', false);
+            divInterval.removeClass('d-none');
+        } else{
+            interval.prop('disabled', true);
+            intervalLength.prop('disabled', true);
+            divInterval.addClass('d-none');
+        }
+
+    })
+
     $('#tasksTable').DataTable(); //This needs to be at the end so that the formatting can be done first before the table is output
 });
 
@@ -51,6 +70,7 @@ function setPrioColor(tPrio){ //tPrio is a jQuery object
 }
 
 function showTaskInfo(tName, tStatus, tCat, tUser, tPrio, tCreated, tDue, tDesc, tRepeat){
+    // We will need to change the ID for these selectors because they are the same as the create_task form. We cannot have 2 elements with the same id
     let desc = $('#id_desc');
     let title = $('#modalHeaderViewTask');
     let user = $('#id_user');

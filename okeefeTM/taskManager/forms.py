@@ -19,11 +19,18 @@ class TaskForm(ModelForm):
             attrs={'type': 'date', 'class': 'form-control'}
         )
         self.fields['repeat'].widget.attrs['class'] = 'form-select'
+        self.fields['repeat'].widget.attrs['id'] = 'id_repeat_create'
         self.fields['desc'].widget = widgets.Textarea(
             attrs={'class': 'form-control', 'rows': '5'}
         )
         self.fields['interval'].widget.attrs['class'] = 'form-select'
+        self.fields['interval'].widget.attrs['id'] = 'id_interval_create'
+        self.fields['interval'].widget.attrs['disabled'] = True
+        self.fields['intervalLength'].widget.attrs['placeholder'] = 'Frequency'
         self.fields['intervalLength'].widget.attrs['class'] = 'form-control'
+        self.fields['intervalLength'].widget.attrs['id'] = 'id_intervalLength_create'
+        self.fields['intervalLength'].widget.attrs['disabled'] = True
+        
 
 
     class Meta:
@@ -33,7 +40,8 @@ class TaskForm(ModelForm):
             'user': 'Assign To',
             'desc': 'Description',
             'date_due': 'Date Due',
-            'repeat': 'Is this a recurring task?'
+            'repeat': 'Is this a recurring task?',
+            'intervalLength': 'Length',
             }
         fields = [
             'name',
@@ -42,8 +50,8 @@ class TaskForm(ModelForm):
             'priority',
             'date_due',
             'repeat',
-            'interval',
             'intervalLength',
+            'interval',
             'desc',
             ]
 

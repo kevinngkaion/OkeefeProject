@@ -69,7 +69,7 @@
 <!-- Task Dashboard Ends -->
 
 <!-- Modal View Task-->
-<div class="modal fade" id="modalViewTask" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+{% comment %} <div class="modal fade" id="modalViewTask" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="modalTitleViewTask" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
@@ -116,7 +116,7 @@
             </form>
         </div>
     </div>
-</div>
+</div> {% endcomment %}
 
 <!-- Modal Create Task -->
 <div class="modal fade" id="modalCreateTask" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
@@ -133,8 +133,17 @@
                 <div class="modal-body">
                     <!-- Looping through the form fields-->
                     {% for field in form %}
+                    {% if field.label == 'Length' %}
+                        <div id="id_repeat_interval_create" class="row d-flex flex-wrap justify-content-between mb-3 d-none">
+                            <div class="col mx-4 d-flex align-items-center">
+                                <div class="col-6 text-end px-2">*This task should repeat every</div>
+                                {{field}}
+                    {% elif field.label == 'Interval'%}
+                        {{field}}
+                            </div>
+                    </div>
                     <!-- Group every 2 fields together into a div -->
-                    {% if forloop.counter0|divisibleby:2 %}
+                    {% elif forloop.counter0|divisibleby:2 %}
                         <div class="row d-flex flex-wrap justify-content-between mb-3">
                             <!-- Give the description its own row -->
                             {% if field.label == 'Description' %}
@@ -142,6 +151,7 @@
                                 {{field.label}}
                                 {{field}}
                             </div>
+                            </div> <!-- This div is to close the desc field since it is the last field.-->
                             {% else %}
                             <div class="col-11 col-md-5 mx-4">
                                 {{field.label}}
@@ -157,7 +167,6 @@
                     </div>
                     {% endif %}
                     {% endfor %}
-                    </div> <!-- This div is to close the last filed of the form -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>

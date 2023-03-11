@@ -71,6 +71,10 @@ def createRepeatingTasks():
             new_task.status = 0 #Set the new task status to unassigned
             new_task.save() #save the new task
             print("Cloning complete")
+
+            # Set the old task repeats to false
+            task.repeat = False
+            task.save()
     return
 
 def register(request):
