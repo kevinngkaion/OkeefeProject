@@ -69,6 +69,7 @@ def set_as_manager(request, username):
     user.save()
     return redirect(reverse('getAllUsers'))
 
+
 def update_user(request, username):
     user = User.objects.get(username=username)
     userForm = MyUserUpdateForm(instance=user)
@@ -99,16 +100,16 @@ def reset_password(request, username):
 
 
 def getUserInfo(request, username):
-    user = User.objects.get(username=username)
-    current_user = request.user
+    user_to_edit = User.objects.get(username=username)
+    user = request.user
     initial_values = {
-        'username': user.username,
-        'first_name': user.first_name,
-        'last_name': user.last_name,
-        'email': user.email,
+        'username': user_to_edit.username,
+        'first_name': user_to_edit.first_name,
+        'last_name': user_to_edit.last_name,
+        'email': user_to_edit.email,
     }
     userForm = EditUserForm(initial=initial_values)
-    context = {'form': userForm, 'user': user, 'current_user': current_user}
+    context = {'form': userForm, 'user_to_edit': user_to_edit, 'user': user}
     return render(request, 'viewUserInfo.html', context)
     # return HttpResponseRedirect(reverse('update', args=[current_user.username]), context)
 

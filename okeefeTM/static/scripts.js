@@ -11,6 +11,7 @@ $(document).ready(function () {
     }
 
     $('#tasksTable').DataTable(); //This needs to be at the end so that the formatting can be done first before the table is output
+    $('#usersTable').DataTable(); //This needs to be at the end so that the formatting can be done first before the table is output
 });
 
 function setStatusColor(tStat){// tStat is a jQuery obj
