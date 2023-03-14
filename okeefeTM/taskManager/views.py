@@ -43,6 +43,8 @@ def createRepeatingTasks():
         length = task.intervalLength
         if interval == "Daily":
             nextDate = task.date_completed + timedelta(days=length)
+            print("The date that this task will be created again is")
+            print(nextDate)
         elif interval == "Weekly":
             nextDate = task.date_completed + timedelta(weeks=length)
         elif interval == "Monthly":
@@ -51,7 +53,7 @@ def createRepeatingTasks():
             nextDate = task.date_compelted + relativedelta(years=length)
 
         # Check if nextDate is today
-        if nextDate - timedelta(days=1) == date.today():
+        if nextDate == date.today():
             # Clone that task into the task model as a new task
             print("Cloning Task")
             new_task = Task()
