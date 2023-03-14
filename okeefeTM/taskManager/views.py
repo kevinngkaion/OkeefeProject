@@ -89,6 +89,9 @@ def user_login(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
+                if remember_me is not None:
+                    request.session.set_expired(0)
+
                 return redirect('home')
             else:
                 form.add_error(None, 'Invalid username or password')
@@ -97,6 +100,14 @@ def user_login(request):
 
     return render(request, 'login.html', {'form': form})
 
+class UpdatedLoginView(LoginView):
+    form_class = LoginForm
+    def form_valid(self, form):
+        remember_me = form.cleaned_data['remember_me']
+        if not remember_me:
+            self.request.session.set_expiry(0)
+            self.requset.session.modified = True
+        return super(UpdatedLoginView, self).form_valid(form)
 
 def user_logout(request):
     logout(request)
