@@ -17,7 +17,6 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-
 class Task(models.Model):
     LOW = 0
     MEDIUM = 1
@@ -52,7 +51,7 @@ class Task(models.Model):
         (MONTHLY, "Month(s)"),
         (ANNUAL, "Year(s)"),
     ] 
-    user = models.ForeignKey(User, on_delete=models.RESTRICT)
+    user = models.ForeignKey(User, on_delete=models.RESTRICT, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.RESTRICT)
     name = models.CharField(max_length=150)
     desc = models.CharField(max_length=255)
@@ -70,9 +69,7 @@ class Task(models.Model):
 
     def __str__(self):
       return self.name
-    
 
-# DELETED THE REPEATING_TASKS MODEL
 
 class Upload(models.Model):
     task = models.ForeignKey(Task, on_delete=models.RESTRICT)

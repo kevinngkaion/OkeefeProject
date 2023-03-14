@@ -16,7 +16,16 @@
                                 <h2 class="fw-bold mb-2">Welcome!</h2>
                                 <p class="text-dark-50 mb-5">Sign in to task manager</p>
 
+                                <p class="text-center text-primary">
+                                 {% if form.errors %}
+                                    {% for error in form.non_field_errors %}
+                                            {{error}}
+                                    {% endfor %}
+                                {% endif %}
+                                </p>
+
                                 <div class="form-outline form-white mb-4">
+
                                     <label class="form-label" for="id_username">Username</label>
                                     <input type="text" id="id_username" name="username" class="form-control"
                                            placeholder="email" required autofocus>
@@ -35,7 +44,7 @@
                                         <label class="form-check-label" for="remember-me">Remember me</label>
                                     </div>
                                     <div>
-                                        <p class="small mb-5 pb-lg-2 text-end"><a class="text-dark-50" href="#!">Forgot
+                                        <p class="small mb-5 pb-lg-2 text-end"><a class="text-dark-50" href="#!">Forget
                                             password?</a></p>
                                     </div>
                                 </div>

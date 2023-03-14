@@ -50,7 +50,9 @@
                         </button>
                         <ul class="dropdown-menu">
                             {% for choice in choices %}
-                            <li><button class="dropdown-item" onclick="changeStatus({{task.id}}, '{{choice.1}}')">{{choice.1}}</button></li>
+                            {% if choice.0 != 0 %}
+                            <li><button class="dropdown-item" onclick="changeStatus({{task.id}}, {{choice.0}}, '{{choice.1}}')">{{choice.1}}</button></li>
+                            {% endif %}
                             {% endfor %}
                         </ul>
                     </td>
@@ -59,7 +61,17 @@
                     <td><div class='task-prio'>{{ task.get_priority_display }}</div></td>
                     <td>{{ task.date_created }}</td>
                     <td>{{ task.date_due }}</td>
-                    <td class="text-center"><button class="btn btn-primary text-light" data-bs-toggle="modal" data-bs-target="#modalViewTask" onclick="showTaskInfo('{{ task.name }}', {{task.status}}, {{task.category.id}}, {{task.user.id}}, {{task.priority}}, '{{task.date_created}}', '{{task.date_due}}', '{{task.desc}}', '{{task.repeat}}')">View Task</button></td>
+                    <td class="text-center"><button class="btn btn-primary text-light" data-bs-toggle="modal" data-bs-target="#modalViewTask" onclick="showTaskInfo({{ task.id }},
+                     '{{ task.name }}',
+                      {{task.status}},
+                       {{task.category.id}},
+                        {{task.user.id}},
+                         {{task.priority}},
+                          '{{task.date_created}}',
+                           '{{task.date_due}}',
+                            '{{task.desc}}',
+                             '{{task.repeat}}',
+                             '{{task.note}}')">View Task</button></td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -78,40 +90,15 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <!-- Form Proper -->
-            <form action="" method="POST" class="form p-4" id="formViewTask">
+            <form action="edit_task" method="POST" class="form p-4" id="formViewTask">
                 {% csrf_token %}
                 <div class="modal-body">
                     <!-- Looping through the form fields-->
-                    {% for field in form %}
-                    <!-- Group every 2 fields together into a div -->
-                    {% if forloop.counter0|divisibleby:2 %}
-                        <div class="row d-flex flex-wrap justify-content-between mb-3">
-                            <!-- Give the description its own row -->
-                            {% if field.label == 'Description' %}
-                            <div class="col mx-4">
-                                {{field.label}}
-                                {{field}}
-                            </div>
-                            {% else %}
-                            <div class="col-11 col-md-5 mx-4">
-                                {{field.label}}
-                                {{field}}
-                            </div>
-                            {% endif %}
-                        
-                    {% else %}
-                        <div class="col-11 col-md-5 mx-4">
-                            {{field.label}}
-                            {{field}}
-                        </div>
-                    </div>
-                    {% endif %}
-                    {% endfor %}
-                    </div> <!-- This div is to close the last filed of the form -->
+                    {{ editform.as_p }}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-lg" onclick="enableEdit()">Edit</button>
-                    <button type="submit" class="btn btn-primary btn-lg text-light" value="">Save</button>
+                    <button type="button" class="btn btn-secondary btn-lg" onclick="toggleEdit()">Edit</button>
+                    <button id="save_edit" disabled type="submit" class="btn btn-primary btn-lg text-light" value="">Save</button>
                 </div>
             </form>
         </div>
@@ -128,11 +115,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <!-- Form Proper -->
-            <form action="" method="POST" class="form p-4" id="formCreateTask">
+            <form action="create_task" method="POST" class="form p-4" id="formCreateTask">
                 {% csrf_token %}
                 <div class="modal-body">
                     <!-- Looping through the form fields-->
-                    {% for field in form %}
+                    {% for field in createform %}
+                    <!-- Styling for the repeating tasks followup questions-->
                     {% if field.label == 'Length' %}
                         <div id="id_repeat_interval_create" class="row d-flex flex-wrap justify-content-between mb-3 d-none">
                             <div class="col mx-4 d-flex align-items-center">
@@ -164,7 +152,7 @@
                             {{field.label}}
                             {{field}}
                         </div>
-                    </div>
+                        </div>
                     {% endif %}
                     {% endfor %}
                 </div>
@@ -176,4 +164,5 @@
         </div>
     </div>
 </div>
+
 {% endblock %}
