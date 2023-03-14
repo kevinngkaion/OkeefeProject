@@ -5,5 +5,4 @@ from .models import *
 admin.site.register(Department)
 admin.site.register(Category)
 admin.site.register(Task)
-admin.site.register(Repeating_Task)
 admin.site.register(Upload)

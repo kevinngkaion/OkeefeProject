@@ -7,15 +7,24 @@ from .models import *
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.models import User
 from django.contrib import messages, auth
+from django.utils import timezone
+from datetime import date, timedelta
+from dateutil.relativedelta import relativedelta
 
 
 # Create your views here.
 
 def index(request):
-    return redirect('login')
+    if not request.user.is_authenticated:   #redirect user to login if they are not authenticated
+        return redirect('login')
+    return redirect('home')
 
 
 def home(request):
+    if not request.user.is_authenticated:   #redirect user to login if they are not authenticated
+        return redirect('login')
+
+    createRepeatingTasks()
     tasks = Task.objects.all()
     task_model = Task()
     createtask = TaskForm
@@ -39,6 +48,48 @@ def create_task(request):
             form.save()
     return redirect('home')
 
+def createRepeatingTasks():
+    repeatingTasks = Task.objects.filter(repeat=True).exclude(date_completed=None)
+    for task in repeatingTasks:
+        interval = task.interval
+        length = task.intervalLength
+        if interval == "Daily":
+            nextDate = task.date_completed + timedelta(days=length)
+            print("The date that this task will be created again is")
+            print(nextDate)
+        elif interval == "Weekly":
+            nextDate = task.date_completed + timedelta(weeks=length)
+        elif interval == "Monthly":
+            nextDate = task.date_completed + relativedelta(months=length)
+        elif interval == "Yearly":
+            nextDate = task.date_compelted + relativedelta(years=length)
+
+        # Check if nextDate is today
+        if nextDate == date.today():
+            # Clone that task into the task model as a new task
+            print("Cloning Task")
+            new_task = Task()
+            new_task.id = None
+            new_task.name = task.name
+            new_task.user = User.objects.get(username="carolyn") #Set the user to Carolyn
+            new_task.category = task.category
+            new_task.priority = task.priority
+            new_task.date_due = None
+            new_task.repeat = task.repeat
+            new_task.interval = task.interval
+            new_task.intervalLength = task.intervalLength
+            new_task.note = None
+            new_task.desc = task.desc
+            new_task.date_created = date.today()
+            new_task.date_completed = None
+            new_task.status = 0 #Set the new task status to unassigned
+            new_task.save() #save the new task
+            print("Cloning complete")
+
+            # Set the old task repeats to false
+            task.repeat = False
+            task.save()
+    return
 
 def edit_task(request):
     print("edit task")
@@ -52,6 +103,8 @@ def edit_task(request):
             edittask.date_due = request.POST.get("date_due")
         edittask.repeat = request.POST.get("repeat")
         edittask.category = Category.objects.get(id=request.POST.get("category"))
+        edittask.interval = request.POST.get("interval")
+        edittask.intervalLength = request.POST.get("intervalLength")
         edittask.save()
         print(request.POST)
         return redirect('home')
@@ -60,6 +113,9 @@ def edit_task(request):
         return redirect('home')
 
 def register(request):
+    if not request.user.is_authenticated:   #redirect user to login if they are not authenticated
+        return redirect('login')
+
     User = get_user_model()
     userForm = CreateUserForm
 
@@ -69,12 +125,12 @@ def register(request):
             form.save()
             # return HttpResponse('Create User Successfully!')
             return redirect(reverse('getAllUsers'))
-    context = {'create_user_form': userForm}
-    # return render(request, 'sample.html', context)
-    return render(request, 'sample.html', context)
-
+    return redirect('getAllUsers')
 
 def getAllUsers(request):
+    if not request.user.is_authenticated:   #redirect user to login if they are not authenticated
+        return redirect('login')
+
     user_list = User.objects.filter(is_active=True)
     userForm = CreateUserForm
     return render(request, 'all_users.html', {'user_list': user_list, 'create_user_form': userForm})
@@ -140,6 +196,9 @@ def getUserInfo(request, username):
 
 
 def user_login(request):
+    if request.user.is_authenticated:   #redirect user to home if they are authenticated
+        return redirect('home')
+
     if request.method == 'POST':
         form = LoginForm(data=request.POST)
         if form.is_valid():
@@ -163,14 +222,13 @@ def user_logout(request):
 
 
 def update_task_status(request):
-    # TODO: Write code to update task status. Request is storing 'taskID' and 'newStatusID' as GET parameters
-    # print(request.GET.get("newStatusID"))
     task = Task.objects.get(id=request.GET.get("taskID"))
     task.status = request.GET.get("newStatusID")
     task.save()
     return JsonResponse({'msg': 'Status of this task has been updated'}, status=200)  # Status 200 if successfull.
 
-    
+
+# Need to check if this is working properly. Was not working for me
 def mark_as_seen(request):
     if User.objects.get(id=request.GET.get("tUID")) == request.user:
         print("Its you")
