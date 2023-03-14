@@ -122,6 +122,8 @@ class LoginForm(AuthenticationForm):
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
 
+    remember_me = forms.BooleanField(required=False, widget=forms.CheckboxInput())
+
     def clean(self):
         email = self.cleaned_data.get('username')
         password = self.cleaned_data.get('password')

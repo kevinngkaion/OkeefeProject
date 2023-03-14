@@ -130,6 +130,15 @@ function changeStatus(taskID, newStatusID, newStatusName){
     });
 }
 
+var togglePassword = document.querySelector('#togglePassword');
+var password = document.querySelector('#id_password');
+togglePassword.addEventListener('click', function (e) {
+    var type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+    password.setAttribute('type', type);
+    this.querySelector('i').classList.toggle('fa-eye');
+    this.querySelector('i').classList.toggle('fa-eye-slash');
+});
+
 function enableEdit(){
     $("#id_first_name").removeAttr("disabled");
     $("#id_last_name").removeAttr("disabled");
@@ -161,4 +170,3 @@ function confirmSetManager(event, username, url) {
         alert("Set manager cancelled.");
     }
 }
-
