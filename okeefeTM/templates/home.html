@@ -13,55 +13,68 @@
         <div id="task-nav" class="d-flex justify-content-between mt-1 mb-4">
             <div class="col-4 d-flex justify-content-between">
                 <button class="btn btn-primary text-light text-uppercase" type="button" onclick="showMyTasks()">My
-                    Tasks</button>
+                    Tasks
+                </button>
                 <button class="btn btn-primary text-light text-uppercase" type="button" onclick="showAllTasks()">All
-                    Tasks</button>
+                    Tasks
+                </button>
                 <button class="btn btn-primary text-light text-uppercase" type="button"
-                    onclick="showUnassignedTasks()">Unassigned Tasks</button>
+                        onclick="showUnassignedTasks()">Unassigned Tasks
+                </button>
             </div>
             <div class="col-4 d-flex justify-content-end">
                 <!-- Create Task -->
                 <button class="btn btn-primary text-light text-uppercase" type="button" data-bs-toggle="modal"
-                    data-bs-target="#modalCreateTask">Create Task</button>
+                        data-bs-target="#modalCreateTask">Create Task
+                </button>
             </div>
         </div>
 
         <!-- TABLE PROPER -->
         <table id="tasksTable" class="table mt-5 accordion">
             <thead>
-                <tr class="bg-body-tertiary">
-                    <th scope="col">Task</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Assigned To</th>
-                    <th scope="col">Priority</th>
-                    <th scope="col">Date Created</th>
-                    <th scope="col">Due Date</th>
-                    <th scope="col"></th>
-                </tr>
+            <tr class="bg-body-tertiary">
+                <th scope="col">Task</th>
+                <th scope="col">Status</th>
+                <th scope="col">Category</th>
+                <th scope="col">Assigned To</th>
+                <th scope="col">Priority</th>
+                <th scope="col">Date Created</th>
+                <th scope="col">Due Date</th>
+                <th scope="col"></th>
+            </tr>
             </thead>
             <tbody id="taskTable">
-                {% for task in tasks %}
-                <tr id="task{{task.id}}">
-                    <th scope="row">{{ task.name }}</th>
-                    <td>
-                        <button type="button" class="task-status btn btn-sm dropdown-toggle w-100 text-end" data-bs-toggle="dropdown" aria-expanded="false">
-                            {{task.get_status_display}}
-                        </button>
-                        <ul class="dropdown-menu">
-                            {% for choice in choices %}
-                            {% if choice.0 != 0 %}
-                            <li><button class="dropdown-item" onclick="changeStatus({{task.id}}, {{choice.0}}, '{{choice.1}}')">{{choice.1}}</button></li>
-                            {% endif %}
-                            {% endfor %}
-                        </ul>
-                    </td>
-                    <td>{{ task.category }}</td>
-                    <td>{{ task.user }}</td>
-                    <td><div class='task-prio'>{{ task.get_priority_display }}</div></td>
-                    <td>{{ task.date_created }}</td>
-                    <td>{{ task.date_due }}</td>
-                    <td class="text-center"><button class="btn btn-primary text-light" data-bs-toggle="modal" data-bs-target="#modalViewTask" onclick="showTaskInfo({{ task.id }},
+            {% for task in tasks %}
+            <tr id="task{{task.id}}">
+                <th scope="row">{{ task.name }}</th>
+                <td>
+                    <button type="button" class="task-status btn btn-sm dropdown-toggle w-100 text-end"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        {{task.get_status_display}}
+                    </button>
+                    <ul class="dropdown-menu">
+                        {% for choice in choices %}
+                        {% if choice.0 != 0 %}
+                        <li>
+                            <button class="dropdown-item"
+                                    onclick="changeStatus({{task.id}}, {{choice.0}}, '{{choice.1}}')">{{choice.1}}
+                            </button>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>{{ task.category }}</td>
+                <td>{{ task.user }}</td>
+                <td>
+                    <div class='task-prio'>{{ task.get_priority_display }}</div>
+                </td>
+                <td>{{ task.date_created }}</td>
+                <td>{{ task.date_due }}</td>
+                <td class="text-center">
+                    <button class="btn btn-primary text-light" data-bs-toggle="modal" data-bs-target="#modalViewTask"
+                            onclick="showTaskInfo({{ task.id }},
                      '{{ task.name }}',
                       {{task.status}},
                        {{task.category.id}},
@@ -71,9 +84,11 @@
                            '{{task.date_due}}',
                             '{{task.desc}}',
                              '{{task.repeat}}',
-                             '{{task.note}}')">View Task</button></td>
-                </tr>
-                {% endfor %}
+                             '{{task.note}}')">View Task
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
             </tbody>
         </table>
     </div>
@@ -82,7 +97,7 @@
 
 <!-- Modal View Task-->
 <div class="modal fade" id="modalViewTask" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    aria-labelledby="modalTitleViewTask" aria-hidden="true">
+     aria-labelledby="modalTitleViewTask" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-primary text-light" data-bs-theme="dark">
@@ -136,7 +151,9 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-lg" onclick="toggleEdit()">Edit</button>
-                    <button id="save_edit" disabled type="submit" class="btn btn-primary btn-lg text-light" value="">Save</button>
+                    <button id="save_edit" disabled type="submit" class="btn btn-primary btn-lg text-light" value="">
+                        Save
+                    </button>
                 </div>
             </form>
         </div>
@@ -145,7 +162,7 @@
 
 <!-- Modal Create Task -->
 <div class="modal fade" id="modalCreateTask" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    aria-labelledby="modalTitleCreateTask" aria-hidden="true">
+     aria-labelledby="modalTitleCreateTask" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-primary text-light" data-bs-theme="dark">
@@ -190,7 +207,14 @@
                             {{field.label}}
                             {{field}}
                         </div>
+                        {% endif %}
+
+                        {% else %}
+                        <div class="col-11 col-md-5 mx-4">
+                            {{field.label}}
+                            {{field}}
                         </div>
+                    </div>
                     {% endif %}
                     {% endfor %}
                 </div>
@@ -200,7 +224,13 @@
                 </div>
             </form>
         </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary btn-lg text-light" value="">Save</button>
+        </div>
+        </form>
     </div>
+</div>
 </div>
 
 {% endblock %}

@@ -57,7 +57,7 @@ nav{
 
 .button-5:hover {
   transform: translateY(-1px);
-  
+
 }
 
 .button-5:active {
@@ -71,3 +71,4 @@ nav{
 .task-status, .task-prio{
   cursor: default;
 }
+

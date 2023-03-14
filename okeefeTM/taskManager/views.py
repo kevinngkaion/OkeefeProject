@@ -196,6 +196,7 @@ def user_login(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
+
                 return redirect('home')
             else:
                 form.add_error(None, 'Invalid username or password')
@@ -203,7 +204,6 @@ def user_login(request):
         form = LoginForm()
 
     return render(request, 'login.html', {'form': form})
-
 
 def user_logout(request):
     logout(request)
