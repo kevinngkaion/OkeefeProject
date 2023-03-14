@@ -15,10 +15,15 @@ from dateutil.relativedelta import relativedelta
 # Create your views here.
 
 def index(request):
-    return redirect('login')
+    if not request.user.is_authenticated:   #redirect user to login if they are not authenticated
+        return redirect('login')
+    return redirect('home')
 
 
 def home(request):
+    if not request.user.is_authenticated:   #redirect user to login if they are not authenticated
+        return redirect('login')
+
     createRepeatingTasks()
     tasks = Task.objects.all()
     task_model = Task()
@@ -108,6 +113,9 @@ def edit_task(request):
         return redirect('home')
 
 def register(request):
+    if not request.user.is_authenticated:   #redirect user to login if they are not authenticated
+        return redirect('login')
+
     User = get_user_model()
     userForm = CreateUserForm
 
@@ -117,12 +125,12 @@ def register(request):
             form.save()
             # return HttpResponse('Create User Successfully!')
             return redirect(reverse('getAllUsers'))
-    context = {'create_user_form': userForm}
-    # return render(request, 'sample.html', context)
-    return render(request, 'sample.html', context)
-
+    return redirect('getAllUsers')
 
 def getAllUsers(request):
+    if not request.user.is_authenticated:   #redirect user to login if they are not authenticated
+        return redirect('login')
+
     user_list = User.objects.filter(is_active=True)
     userForm = CreateUserForm
     return render(request, 'all_users.html', {'user_list': user_list, 'create_user_form': userForm})
@@ -188,6 +196,9 @@ def getUserInfo(request, username):
 
 
 def user_login(request):
+    if request.user.is_authenticated:   #redirect user to home if they are authenticated
+        return redirect('home')
+
     if request.method == 'POST':
         form = LoginForm(data=request.POST)
         if form.is_valid():
