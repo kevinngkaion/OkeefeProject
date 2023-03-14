@@ -1,0 +1,62 @@
+{% extends 'navbar.html' %}
+
+{% block content %}
+    <!-- Task Dashboard Begins Here -->
+    <div class="container container-lg mt-2">
+        <!-- Welcome -->
+        <div class="text-center">
+            <h1>Welcome, {{ user.first_name }}</h1> <!-- INSERT USER's NAME HERE -->
+            <h6>You are editing the user {{ user_to_edit.first_name }}</h6> <!-- INSERT USER's NAME HERE -->
+        </div>
+
+        <div class="container w-50 bg-body mt-3 border shadow-sm px-1 rounded">
+            <!-- USER EDIT BAR -->
+
+            <div class="container bg-body p-4 px-4 rounded">
+                <div id="user_edit_bar" class="d-flex justify-content-between mt-1">
+                {% if user.is_staff %}
+                    <div class="col d-flex justify-content-between px-4">
+                        <!-- Reset Password -->
+                        <a href="{% url 'resetPassword' user_to_edit.username %}">
+                            <button class="btn btn-primary text-light text-uppercase" type="button">Reset Password
+                            </button>
+                        </a>
+                        <!-- Delete User -->
+                        <a href="{% url 'deactivate' user_to_edit.username %}">
+                            <button class="btn btn-primary text-light text-uppercase" type="button"
+                                    onclick="confirmDelete(event, '{{ user_to_edit.username }}', '{% url "deactivate" user_to_edit.username %}')">
+                                Delete User
+                            </button>
+                        </a>
+                        <!-- Set as Manager -->
+                        <a href="{% url 'set_manager' user_to_edit.username %}">
+                            <button class="btn btn-primary text-light text-uppercase" type="button"
+                                    onclick="confirmSetManager(event, '{{ user_to_edit.username }}', '{% url "set_manager" user_to_edit.username %}')">
+                                Set as Manager
+                            </button>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+                <form action="{% url 'update' user_to_edit.username %}" class="form px-4 pt-4" method="post">
+
+                    {% csrf_token %}
+                    {{ form.as_p }}
+
+                    <div class="col d-flex justify-content-between">
+                        <!-- Enable form editing -->
+                        <button class="btn btn-primary text-light text-uppercase" type="button" onclick="enableEdit()">
+                            Edit
+                        </button>
+                        <!-- Save modification -->
+                        <input id="edit_user_save_button" class="btn btn-primary text-light text-uppercase"
+                               type="submit"
+                               value="Save">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- User Dashboard Ends -->
+
+{% endblock %}
