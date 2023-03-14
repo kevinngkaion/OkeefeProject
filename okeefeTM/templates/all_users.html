@@ -9,6 +9,15 @@
         </div>
 
         <div class="container mt-1 mb-4 p-4 border shadow-sm px-4 rounded">
+            <div id="user-nav" class="d-flex justify-content-between mb-3">
+                <div class="col d-flex justify-content-between">
+                    <h5>User Management</h5>
+                    <!-- Create User -->
+                    <button class="btn btn-primary text-light text-uppercase" type="button" data-bs-toggle="modal"
+                            data-bs-target="#modalCreateUser">Create User
+                    </button>
+                </div>
+            </div>
                 <!-- TABLE PROPER -->
                 <table id="usersTable" class="table">
                     <thead>
@@ -36,14 +45,6 @@
                     {% endfor %}
                     </tbody>
                 </table>
-        <div id="user-nav" class="d-flex justify-content-between mt-3">
-                <div class="col d-flex justify-content-end">
-                    <!-- Create User -->
-                    <button class="btn btn-primary text-light text-uppercase" type="button" data-bs-toggle="modal"
-                            data-bs-target="#modalCreateUser">Create User
-                    </button>
-                </div>
-            </div>
         </div>
     </div>
     <!-- User Dashboard Ends -->

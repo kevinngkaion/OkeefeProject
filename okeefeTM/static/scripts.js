@@ -10,28 +10,35 @@ $(document).ready(function () {
         setPrioColor($(tPrios[i]));
     }
 
-    // on change for is this a recurring task
-    $('#formCreateTask').on('change', '#id_repeat_create', function() {
-        intervalLength = $('#id_intervalLength_create');
-        interval = $('#id_interval_create');
-        divInterval = $('#id_repeat_interval_create');
-        repeat = $('#id_repeat_create');
-        // Toggle the disabled and visible properties for the fields and their parent div
-        if(repeat.val() == "True"){
-            interval.prop('disabled', false);
-            intervalLength.prop('disabled', false);
-            divInterval.removeClass('d-none');
-        } else{
-            interval.prop('disabled', true);
-            intervalLength.prop('disabled', true);
-            divInterval.addClass('d-none');
-        }
+    // on change for is this a recurring task for both create and edit
+    $('#formCreateTask').on('change', '#id_create_repeat', function() {
+        toggleRepeatOptions($('#id_create_repeat'), 'create');
+    })
 
+    $('#formEditTask').on('change', '#id_edit_repeat', function() {
+        toggleRepeatOptions($('#id_edit_repeat'), 'edit');
     })
 
     $('#tasksTable').DataTable(); //This needs to be at the end so that the formatting can be done first before the table is output
     $('#usersTable').DataTable(); //This needs to be at the end so that the formatting can be done first before the table is output
 });
+
+function toggleRepeatOptions(repeatObj, actionType){
+    intervalLength = $('#id_' + actionType + '_intervalLength');
+    interval = $('#id_' + actionType + '_interval');
+    divInterval = $('#id_' + actionType + '_repeat_interval');
+    repeat = repeatObj;
+    if(repeat.val() == "True"){
+        console.log("Toggling")
+        interval.prop('disabled', false);
+        intervalLength.prop('disabled', false);
+        divInterval.removeClass('d-none');
+    } else{
+        interval.prop('disabled', true);
+        intervalLength.prop('disabled', true);
+        divInterval.addClass('d-none');
+    }
+}
 
 function setStatusColor(tStat){// tStat is a jQuery obj
     // remove all btn colour styling first
@@ -83,17 +90,17 @@ function showTaskInfo(tID, tName, tStatus, tCat, tUser, tPrio, tCreated, tDue, t
             console.log(response);
         }
     });
-    let note = $('#id_note');
-    let id = $('#id_id');
-    let desc = $('#id_desc');
+    let note = $('#id_edit_note');
+    let id = $('#id_edit_id');
+    let desc = $('#id_edit_desc');
     let title = $('#modalHeaderViewTask');
-    let user = $('#id_user');
-    let status = $('#id_status');
-    let name = $('#id_name');
-    let category = $('#id_category')
-    let prio = $('#id_priority');
-    let due = $('#id_date_due');
-    let repeat = $('#id_repeat')
+    let user = $('#id_edit_assignedTo');
+    let status = $('#id_edit_status');
+    let name = $('#id_edit_name');
+    let category = $('#id_edit_category')
+    let prio = $('#id_edit_priority');
+    let due = $('#id_edit_due');
+    let repeat = $('#id_edit_repeat')
     let date = new Date(tDue);
     let dueDate = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
     note.val(tNote);
@@ -107,28 +114,19 @@ function showTaskInfo(tID, tName, tStatus, tCat, tUser, tPrio, tCreated, tDue, t
     prio.val(tPrio);
     due.val(dueDate);
     repeat.val(tRepeat);
-    id.prop("hidden", true);
-    note.prop("readonly", true)
-    status.prop("disabled", true);
-    name.prop("disabled", true);
-    user.prop("disabled", true);
-    category.prop("disabled", true);
-    prio.prop("disabled", true);
-    due.prop("disabled", true);
-    repeat.prop("disabled", true);
-    desc.prop("readonly", true);
 }
 
 function toggleEdit(){
-    $('#id_desc').prop("readonly", !$('#id_desc').prop("readonly"));
-    $('#id_note').prop("readonly", !$('#id_note').prop("readonly"));
-    $('#id_user').prop("disabled", !$('#id_user').prop("disabled"));
-    $('#id_status').prop("disabled", !$('#id_status').prop("disabled"));
-    $('#id_name').prop("disabled", !$('#id_name').prop("disabled"));
-    $('#id_category').prop("disabled", !$('#id_category').prop("disabled"));
-    $('#id_priority').prop("disabled", !$('#id_priority').prop("disabled"));
-    $('#id_date_due').prop("disabled", !$('#id_date_due').prop("disabled"));
-    $('#id_repeat').prop("disabled", !$('#id_repeat').prop("disabled"));
+    console.log("Toggling Edit");
+    $('#id_edit_desc').prop("readonly", !$('#id_edit_desc').prop("readonly"));
+    $('#id_edit_note').prop("readonly", !$('#id_edit_note').prop("readonly"));
+    $('#id_edit_assignedTo').prop("disabled", !$('#id_edit_assignedTo').prop("disabled"));
+    $('#id_edit_status').prop("disabled", !$('#id_edit_status').prop("disabled"));
+    $('#id_edit_name').prop("disabled", !$('#id_edit_name').prop("disabled"));
+    $('#id_edit_category').prop("disabled", !$('#id_edit_category').prop("disabled"));
+    $('#id_edit_priority').prop("disabled", !$('#id_edit_priority').prop("disabled"));
+    $('#id_edit_due').prop("disabled", !$('#id_edit_due').prop("disabled"));
+    $('#id_edit_repeat').prop("disabled", !$('#id_edit_repeat').prop("disabled"));
     $('#save_edit').prop("disabled", !$('#save_edit').prop("disabled"));
 }
 

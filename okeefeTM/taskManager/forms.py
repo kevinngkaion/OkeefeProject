@@ -10,26 +10,26 @@ class TaskForm(ModelForm):
     # This is for the styling of the form fields
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['name'].widget.attrs['class'] = 'form-control'
-        self.fields['user'].widget.attrs['class'] = 'form-select'
-        self.fields['category'].widget.attrs['class'] = 'form-select'
-        self.fields['priority'].widget.attrs['class'] = 'form-select'
-        self.fields['date_due'].widget = widgets.DateInput(
-            attrs={'type': 'date', 'class': 'form-control'}
-        )
-        self.fields['repeat'].widget.attrs['class'] = 'form-select'
-        self.fields['repeat'].widget.attrs['id'] = 'id_repeat_create'
-        self.fields['desc'].widget = widgets.Textarea(
-            attrs={'class': 'form-control', 'rows': '5'}
-        )
-        self.fields['interval'].widget.attrs['class'] = 'form-select'
-        self.fields['interval'].widget.attrs['id'] = 'id_interval_create'
-        self.fields['interval'].widget.attrs['disabled'] = True
-        self.fields['intervalLength'].widget.attrs['placeholder'] = 'Frequency'
-        self.fields['intervalLength'].widget.attrs['class'] = 'form-control'
-        self.fields['intervalLength'].widget.attrs['id'] = 'id_intervalLength_create'
-        self.fields['intervalLength'].widget.attrs['disabled'] = True
-        
+        attrs = {
+            'name': {'class': 'form-control', 'id': 'id_create_name'},
+            'user': {'class': 'form-select', 'id': 'id_create_assignedTo'},
+            'category': {'class': 'form-select', 'id': 'id_create_category'},
+            'priority': {'class': 'form-select', 'id': 'id_create_priority'},
+            'date_due': {'class': 'form-control', 'id': 'id_create_due', 'type': 'date'},
+            'repeat': {'class': 'form-select', 'id': 'id_create_repeat',},
+            'desc': {'class': 'form-control', 'id': 'id_create_desc', 'rows': '5'},
+            'interval': {'class': 'form-select', 'id': 'id_create_interval', 'disabled': True},
+            'intervalLength': {'class': 'form-control', 'id': 'id_create_intervalLength', 'disabled': True, 'placeholder': 'Frequency'},
+        }        
+        self.fields['name'].widget.attrs.update(attrs['name'])
+        self.fields['user'].widget.attrs.update(attrs['user'])
+        self.fields['category'].widget.attrs.update(attrs['category'])
+        self.fields['priority'].widget.attrs.update(attrs['priority'])
+        self.fields['date_due'].widget = widgets.DateInput(attrs=attrs['date_due'])
+        self.fields['repeat'].widget.attrs.update(attrs['repeat'])
+        self.fields['desc'].widget = widgets.Textarea(attrs=attrs['desc'])
+        self.fields['interval'].widget.attrs.update(attrs['interval'])
+        self.fields['intervalLength'].widget.attrs.update(attrs['intervalLength'])
 
 
     class Meta:
@@ -56,23 +56,38 @@ class TaskForm(ModelForm):
         ]
 
 class EditTaskForm(ModelForm):
-    id = forms.IntegerField()
+    id = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'd-none', 'id': 'id_edit_id', 'hidden': True}))
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['user'].widget.attrs['class'] = 'form-select'
-        self.fields['category'].widget.attrs['class'] = 'form-select'
-        self.fields['priority'].widget.attrs['class'] = 'form-select'
-        self.fields['date_due'].widget = widgets.DateInput(
-            attrs={'type': 'date', 'class': 'form-control'}
-        )
-        self.fields['repeat'].widget.attrs['class'] = 'form-select'
-        self.fields['desc'].widget = widgets.Textarea(
-            attrs={'class': 'form-control', 'rows': '5'}
-        )
-        self.fields['status'].widget.attrs['class'] = 'form-select'
-        self.fields['note'].widget = widgets.Textarea(
-            attrs={'class': 'form-control', 'rows': '3'}
-        )
+        attrs = {
+            'user': {'class': 'form-select', 'id': 'id_edit_assignedTo', 'disabled': True},
+            'category': {'class': 'form-select', 'id': 'id_edit_category', 'disabled': True},
+            'priority': {'class': 'form-select', 'id': 'id_edit_priority', 'disabled': True},
+            'date_due': {'class': 'form-control', 'id': 'id_edit_due', 'type': 'date', 'disabled': True},
+            'repeat': {'class': 'form-select', 'id': 'id_edit_repeat', 'disabled': True},
+            'desc': {'class': 'form-control', 'id': 'id_edit_desc', 'rows': '5', 'readonly': True},
+            'interval': {'class': 'form-select', 'id': 'id_edit_interval', 'disabled': True},
+            'intervalLength': {
+                'class': 'form-control',
+                'id': 'id_edit_intervalLength',
+                'disabled': True,
+                'placeholder': 'Frequency',
+                },
+            'status': {'class': 'form-select', 'id': 'id_edit_status', 'disabled': True},
+            'note': {'class': 'form-control', 'id': 'id_edit_note', 'rows': '2', 'readonly': True},
+        }        
+
+        self.fields['user'].widget.attrs.update(attrs['user'])
+        self.fields['category'].widget.attrs.update(attrs['category'])
+        self.fields['priority'].widget.attrs.update(attrs['priority'])
+        self.fields['date_due'].widget = widgets.DateInput(attrs=attrs['date_due'])
+        self.fields['repeat'].widget.attrs.update(attrs['repeat'])
+        self.fields['desc'].widget = widgets.Textarea(attrs=attrs['desc'])
+        self.fields['interval'].widget.attrs.update(attrs['interval'])
+        self.fields['intervalLength'].widget.attrs.update(attrs['intervalLength'])
+        self.fields['status'].widget.attrs.update(attrs['status'])
+        self.fields['note'].widget = widgets.Textarea(attrs=attrs['note'])
+
     class Meta:
         model = Task
         labels = {
@@ -91,6 +106,8 @@ class EditTaskForm(ModelForm):
             'priority',
             'date_due',
             'repeat',
+            'intervalLength',
+            'interval',
             'desc',
             'note',
             ]

@@ -98,6 +98,8 @@ def edit_task(request):
             edittask.date_due = request.POST.get("date_due")
         edittask.repeat = request.POST.get("repeat")
         edittask.category = Category.objects.get(id=request.POST.get("category"))
+        edittask.interval = request.POST.get("interval")
+        edittask.intervalLength = request.POST.get("intervalLength")
         edittask.save()
         print(request.POST)
         return redirect('home')
@@ -209,14 +211,13 @@ def user_logout(request):
 
 
 def update_task_status(request):
-    # TODO: Write code to update task status. Request is storing 'taskID' and 'newStatusID' as GET parameters
-    # print(request.GET.get("newStatusID"))
     task = Task.objects.get(id=request.GET.get("taskID"))
     task.status = request.GET.get("newStatusID")
     task.save()
     return JsonResponse({'msg': 'Status of this task has been updated'}, status=200)  # Status 200 if successfull.
 
-    
+
+# Need to check if this is working properly. Was not working for me
 def mark_as_seen(request):
     if User.objects.get(id=request.GET.get("tUID")) == request.user:
         print("Its you")
