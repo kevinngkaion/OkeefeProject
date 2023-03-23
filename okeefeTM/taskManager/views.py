@@ -15,13 +15,13 @@ from dateutil.relativedelta import relativedelta
 # Create your views here.
 
 def index(request):
-    if not request.user.is_authenticated:   #redirect user to login if they are not authenticated
+    if not request.user.is_authenticated:  # redirect user to login if they are not authenticated
         return redirect('login')
     return redirect('home')
 
 
 def home(request):
-    if not request.user.is_authenticated:   #redirect user to login if they are not authenticated
+    if not request.user.is_authenticated:  # redirect user to login if they are not authenticated
         return redirect('login')
 
     createRepeatingTasks()
@@ -48,6 +48,7 @@ def create_task(request):
             form.save()
     return redirect('home')
 
+
 def createRepeatingTasks():
     repeatingTasks = Task.objects.filter(repeat=True).exclude(date_completed=None)
     for task in repeatingTasks:
@@ -71,7 +72,7 @@ def createRepeatingTasks():
             new_task = Task()
             new_task.id = None
             new_task.name = task.name
-            new_task.user = User.objects.get(username="carolyn") #Set the user to Carolyn
+            new_task.user = User.objects.get(username="carolyn")  # Set the user to Carolyn
             new_task.category = task.category
             new_task.priority = task.priority
             new_task.date_due = None
@@ -82,14 +83,15 @@ def createRepeatingTasks():
             new_task.desc = task.desc
             new_task.date_created = date.today()
             new_task.date_completed = None
-            new_task.status = 0 #Set the new task status to unassigned
-            new_task.save() #save the new task
+            new_task.status = 0  # Set the new task status to unassigned
+            new_task.save()  # save the new task
             print("Cloning complete")
 
             # Set the old task repeats to false
             task.repeat = False
             task.save()
     return
+
 
 def edit_task(request):
     print("edit task")
@@ -112,8 +114,9 @@ def edit_task(request):
         print("No good")
         return redirect('home')
 
+
 def register(request):
-    if not request.user.is_authenticated:   #redirect user to login if they are not authenticated
+    if not request.user.is_authenticated:  # redirect user to login if they are not authenticated
         return redirect('login')
 
     User = get_user_model()
@@ -127,8 +130,9 @@ def register(request):
             return redirect(reverse('getAllUsers'))
     return redirect('getAllUsers')
 
+
 def getAllUsers(request):
-    if not request.user.is_authenticated:   #redirect user to login if they are not authenticated
+    if not request.user.is_authenticated:  # redirect user to login if they are not authenticated
         return redirect('login')
 
     user_list = User.objects.filter(is_active=True)
@@ -161,7 +165,13 @@ def update_user(request, username):
             user.last_name = form.cleaned_data['last_name']
             user.email = form.cleaned_data['email']
             user.save()
-            return redirect(reverse('getAllUsers'))
+            # check if user is a manager
+            if user.is_staff:
+                return redirect(reverse('getAllUsers'))
+            else:
+                # stay on the same page
+                return redirect(reverse('user_info', kwargs={'username': user.username}))
+
     context = {'form': userForm, 'user': user}
     return render(request, 'all_users.html', context)
 
@@ -196,7 +206,7 @@ def getUserInfo(request, username):
 
 
 def user_login(request):
-    if request.user.is_authenticated:   #redirect user to home if they are authenticated
+    if request.user.is_authenticated:  # redirect user to home if they are authenticated
         return redirect('home')
 
     if request.method == 'POST':
@@ -215,6 +225,7 @@ def user_login(request):
         form = LoginForm()
 
     return render(request, 'login.html', {'form': form})
+
 
 def user_logout(request):
     logout(request)
