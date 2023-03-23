@@ -77,3 +77,11 @@ class Upload(models.Model):
     file_name = models.CharField(max_length=255)
     alt_txt = models.CharField(max_length=255)
     time = models.DateTimeField(default=timezone.now())
+
+
+class UserDepartment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.RESTRICT, unique=True)
+    department = models.ForeignKey(Department, on_delete=models.RESTRICT)
+
+    def __str__(self):
+        return "User: " + self.user.get_username() + " | Deparment: " + self.department.name
