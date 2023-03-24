@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    console.log("DOCUMENT READY");
     // Set colours for task status
     setStatsPrios();
 
@@ -197,16 +198,20 @@ function confirmSetManager(event, username, url) {
     }
 }
 
-function getTasks(filter){
-    $.ajax({
-        url: 'get_tasks',
-        type: 'get',
-        data: {
-            filter: filter
-        },
-        success: (response) => {
-            $('#taskTable').html(response);
-            setStatsPrios();
-        }
-    });
-}
+// THIS FUNCTION IS NOT BEING USED. It is for ajax version of task nav menu
+// function getTasks(filter){
+//     $.ajax({
+//         url: 'get_tasks',
+//         type: 'get',
+//         data: {
+//             filter: filter
+//         },
+//         success: (response) => {
+//             taskTable.clear();
+//             $('#taskTable').html(response);
+//             setStatsPrios();
+//             taskTable.add(['Test Task', 'Complete', 'Programming', 'kevin', 'low', 'March 31, 2023', 'March 31, 2023', '']);
+//             taskTable.draw();
+//         }
+//     });
+// }

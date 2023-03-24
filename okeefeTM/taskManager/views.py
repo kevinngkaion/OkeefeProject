@@ -24,7 +24,10 @@ def home(request):
     user = request.user        
     if not user.is_authenticated:   #redirect user to login if they are not authenticated
         return redirect('login')
-    if user.is_staff:
+    
+    if request.GET.get('filter'):   
+        tasks = get_tasks(user, request.GET.get('filter'))    #Filter tasks if there is a get param
+    elif user.is_staff:
         tasks = Task.objects.all()
     else:
         tasks = Task.objects.filter(user=user)
@@ -42,17 +45,16 @@ def home(request):
     return render(request, 'home.html', context)
 
 
-def get_tasks(request):
-    filter = request.GET.get('filter')
-    if filter == 'all':
+def get_tasks(user, tasks_to_get):
+    if tasks_to_get == 'all':
         tasks = Task.objects.all()
-    elif filter == 'mine':
-        tasks = Task.objects.filter(user=request.user)
-    elif filter == 'unassigned':
+    elif tasks_to_get == 'user':
+        tasks = Task.objects.filter(user=user)
+    elif tasks_to_get == 'unassigned':
         tasks = Task.objects.filter(status=Task.UNASSIGNED)
-    elif filter == 'completed':
+    elif tasks_to_get == 'completed':
         tasks = Task.objects.filter(status=Task.COMPLETE)
-    return render(request, 'tasks_table.html', {'tasks': tasks})
+    return tasks
 
 
 def create_task(request):
