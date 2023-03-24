@@ -21,11 +21,13 @@ def index(request):
 
 
 def home(request):
-    if not request.user.is_authenticated:   #redirect user to login if they are not authenticated
+    user = request.user        
+    if not user.is_authenticated:   #redirect user to login if they are not authenticated
         return redirect('login')
-
-    createRepeatingTasks()
-    tasks = Task.objects.all()
+    if user.is_staff:
+        tasks = Task.objects.all()
+    else:
+        tasks = Task.objects.filter(user=user)
     task_model = Task()
     createtask = TaskForm
     edittask = EditTaskForm
@@ -40,6 +42,17 @@ def home(request):
     return render(request, 'home.html', context)
 
 
+def get_tasks(request):
+    filter = request.GET.get('filter')
+    if filter == 'all':
+        tasks = Task.objects.all()
+    elif filter == 'mine':
+        tasks = Task.objects.filter(user=request.user)
+    elif filter == 'unassigned':
+        tasks = Task.objects.filter(status=Task.UNASSIGNED)
+    return render(request, 'tasks_table.html', {'tasks': tasks})
+
+
 def create_task(request):
     createtaskForm = TaskForm
     if request.method == "POST":
@@ -47,6 +60,7 @@ def create_task(request):
         if form.is_valid():
             form.save()
     return redirect('home')
+
 
 def createRepeatingTasks():
     repeatingTasks = Task.objects.filter(repeat=True).exclude(date_completed=None)

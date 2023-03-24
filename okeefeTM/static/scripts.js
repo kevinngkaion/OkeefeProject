@@ -1,14 +1,7 @@
 $(document).ready(function () {
     // Set colours for task status
-    let tStats = $("#tasksTable .task-status");
-    for (let i = 0; i < tStats.length; i++){
-        setStatusColor($(tStats[i]));
-    }
+    setStatsPrios();
 
-    let tPrios = $('#tasksTable .task-prio');
-    for (let i = 0; i < tPrios.length; i++){
-        setPrioColor($(tPrios[i]));
-    }
 
     // on change for is this a recurring task for both create and edit
     $('#formCreateTask').on('change', '#id_create_repeat', function() {
@@ -22,6 +15,21 @@ $(document).ready(function () {
     $('#tasksTable').DataTable(); //This needs to be at the end so that the formatting can be done first before the table is output
     $('#usersTable').DataTable(); //This needs to be at the end so that the formatting can be done first before the table is output
 });
+
+
+function setStatsPrios(){
+    // Set colours for task status
+    let tStats = $("#tasksTable .task-status");
+    for (let i = 0; i < tStats.length; i++){
+        setStatusColor($(tStats[i]));
+    }
+
+    let tPrios = $('#tasksTable .task-prio');
+    for (let i = 0; i < tPrios.length; i++){
+        setPrioColor($(tPrios[i]));
+    }
+}
+
 
 function toggleRepeatOptions(repeatObj, actionType){
     intervalLength = $('#id_' + actionType + '_intervalLength');
@@ -147,6 +155,7 @@ function changeStatus(taskID, newStatusID, newStatusName){
     });
 }
 
+// toggle being able to see password
 var togglePassword = document.querySelector('#togglePassword');
 var password = document.querySelector('#id_password');
 togglePassword.addEventListener('click', function (e) {
@@ -186,4 +195,18 @@ function confirmSetManager(event, username, url) {
     } else {
         alert("Set manager cancelled.");
     }
+}
+
+function getTasks(filter){
+    $.ajax({
+        url: 'get_tasks',
+        type: 'get',
+        data: {
+            filter: filter
+        },
+        success: (response) => {
+            $('#taskTable').html(response);
+            setStatsPrios();
+        }
+    });
 }
