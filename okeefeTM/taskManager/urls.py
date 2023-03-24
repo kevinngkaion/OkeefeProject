@@ -20,6 +20,7 @@ urlpatterns = [
   path('mark_as_seen', views.mark_as_seen, name='mark_as_seen'),
   path('user_info/<str:username>/', views.getUserInfo, name='user_info'),
   path('resetPassword/<str:username>/', views.reset_password, name='resetPassword'),
+
   ]
 
 

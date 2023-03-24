@@ -206,7 +206,7 @@ def user_login(request):
             password = form.cleaned_data.get('password')
             user = authenticate(request, username=username, password=password)
             if user is not None:
-                if request.POST.get('remember-me'):
+                if request.POST.get('rememberme'):
                     request.session['username'] = username
                     request.session['password'] = password
                     request.session.set_expiry(604800)
@@ -245,3 +245,7 @@ def mark_as_seen(request):
     else:
         print("Not you at all")
         return JsonResponse({"msg": 'not you'}, status=111)
+
+def password_success(request):
+    return render(request, 'pswchangedok.html')
+class PasswordResetView
