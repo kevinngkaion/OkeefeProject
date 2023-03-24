@@ -148,7 +148,7 @@ function changeStatus(taskID, newStatusID, newStatusName){
             newStatusID: newStatusID
         },
         success: (response) => {
-            let taskStatus = $("#task" + taskId + " .task-status");
+            let taskStatus = $("#task" + taskID + " .task-status");
             taskStatus.text(newStatusName + " ");
             setStatusColor(taskStatus);
             console.log(response);

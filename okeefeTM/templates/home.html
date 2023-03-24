@@ -11,11 +11,17 @@
     <div class="container bg-body mt-5 p-4 border shadow-sm px-4 rounded">
         <!-- TASK NAVIGATION BAR -->
         <div id="task-nav" class="d-flex justify-content-between mt-1 mb-4">
+            {% if user.is_staff %}
             <div class="col-6 d-flex justify-content-between">
+            {% else %}
+            <div class="col-4 d-flex justify-content-between">
+            {% endif %}
                 <a href='home?filter=user'><button class="btn btn-primary text-light text-uppercase" type="button">My Tasks</button></a>
                 <a href='home?filter=all'><button class="btn btn-primary text-light text-uppercase" type="button">All Tasks</button></a>
                 <a href='home?filter=unassigned'><button class="btn btn-primary text-light text-uppercase" type="button">Unassigned Tasks</button></a>
+                {% if user.is_staff %}
                 <a href='home?filter=completed'><button class="btn btn-primary text-light text-uppercase" type="button">Completed Tasks</button></a>
+                {% endif %}
             </div>
             <div class="col-4 d-flex justify-content-end">
                 <!-- Create Task -->
