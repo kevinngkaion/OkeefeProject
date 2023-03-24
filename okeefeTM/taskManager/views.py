@@ -50,6 +50,8 @@ def get_tasks(request):
         tasks = Task.objects.filter(user=request.user)
     elif filter == 'unassigned':
         tasks = Task.objects.filter(status=Task.UNASSIGNED)
+    elif filter == 'completed':
+        tasks = Task.objects.filter(status=Task.COMPLETE)
     return render(request, 'tasks_table.html', {'tasks': tasks})
 
 

@@ -11,13 +11,11 @@
     <div class="container bg-body mt-5 p-4 border shadow-sm px-4 rounded">
         <!-- TASK NAVIGATION BAR -->
         <div id="task-nav" class="d-flex justify-content-between mt-1 mb-4">
-            <div class="col-4 d-flex justify-content-between">
-                <button class="btn btn-primary text-light text-uppercase" type="button" onclick="getTasks('mine')">My
-                    Tasks</button>
-                <button class="btn btn-primary text-light text-uppercase" type="button" onclick="getTasks('all')">All
-                    Tasks</button>
-                <button class="btn btn-primary text-light text-uppercase" type="button"
-                    onclick="getTasks('unassigned')">Unassigned Tasks</button>
+            <div class="col-6 d-flex justify-content-between">
+                <button class="btn btn-primary text-light text-uppercase" type="button" onclick="getTasks('mine')">My Tasks</button>
+                <button class="btn btn-primary text-light text-uppercase" type="button" onclick="getTasks('all')">All Tasks</button>
+                <button class="btn btn-primary text-light text-uppercase" type="button" onclick="getTasks('unassigned')">Unassigned Tasks</button>
+                <button class="btn btn-primary text-light text-uppercase" type="button" onclick="getTasks('completed')">Completed Tasks</button>
             </div>
             <div class="col-4 d-flex justify-content-end">
                 <!-- Create Task -->
