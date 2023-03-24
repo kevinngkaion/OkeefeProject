@@ -45,7 +45,7 @@ def home(request):
     return render(request, 'home.html', context)
 
 
-def get_tasks(user, tasks_to_get):
+def get_tasks(user, tasks_to_get):      # This function filters the tasks
     if tasks_to_get == 'all':
         tasks = Task.objects.all()
     elif tasks_to_get == 'user':
