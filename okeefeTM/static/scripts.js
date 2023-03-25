@@ -1,26 +1,65 @@
 $(document).ready(function () {
     // Set colours for task status
     let tStats = $("#tasksTable .task-status");
-    for (let i = 0; i < tStats.length; i++){
+    for (let i = 0; i < tStats.length; i++) {
         setStatusColor($(tStats[i]));
     }
 
     let tPrios = $('#tasksTable .task-prio');
-    for (let i = 0; i < tPrios.length; i++){
+    for (let i = 0; i < tPrios.length; i++) {
         setPrioColor($(tPrios[i]));
     }
 
     // on change for is this a recurring task for both create and edit
-    $('#formCreateTask').on('change', '#id_create_repeat', function() {
+    $('#formCreateTask').on('change', '#id_create_repeat', function () {
         toggleRepeatOptions($('#id_create_repeat'), 'create');
     })
 
-    $('#formEditTask').on('change', '#id_edit_repeat', function() {
+    $('#formEditTask').on('change', '#id_edit_repeat', function () {
         toggleRepeatOptions($('#id_edit_repeat'), 'edit');
     })
 
-    $('#tasksTable').DataTable(); //This needs to be at the end so that the formatting can be done first before the table is output
-    $('#usersTable').DataTable(); //This needs to be at the end so that the formatting can be done first before the table is output
+    // if the two passwords do not match, show the error message
+    $('#formCreateUser').on('change', '#id_create_password1', function () {
+        checkPasswordMatch();
+
+        function checkPasswordMatch() {
+            const password = $("#id_create_password1").val();
+            const confirmPassword = $("#id_create_password2").val();
+
+            if (password !== confirmPassword) {
+                $("#passwordsMatch").show();
+                $("#formCreateUser").submit(function (e) {
+                    e.preventDefault();
+                });
+            } else {
+                $("#passwordsMatch").hide();
+                $("#formCreateUser").unbind('submit');
+            }
+        }
+    })
+    // if the two passwords do not match, show the error message
+    $('#formCreateUser').on('change', '#id_create_password2', function () {
+        checkPasswordMatch();
+
+        function checkPasswordMatch() {
+            const password = $("#id_create_password1").val();
+            const confirmPassword = $("#id_create_password2").val();
+
+            if (password !== confirmPassword) {
+                $("#passwordsMatch").show();
+                $("#formCreateUser").submit(function (e) {
+                    e.preventDefault();
+                });
+            } else {
+                $("#passwordsMatch").hide();
+                $("#formCreateUser").unbind('submit');
+            }
+        }
+    })
+
+$('#tasksTable').DataTable(); //This needs to be at the end so that the formatting can be done first before the table is output
+$('#usersTable').DataTable(); //This needs to be at the end so that the formatting can be done first before the table is output
 });
 
 function toggleRepeatOptions(repeatObj, actionType){
@@ -187,3 +226,5 @@ function confirmSetManager(event, username, url) {
         alert("Set manager cancelled.");
     }
 }
+
+//

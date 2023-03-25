@@ -126,7 +126,12 @@ def register(request):
         form = CreateUserForm(request.POST)
         if form.is_valid():
             form.save()
-            # return HttpResponse('Create User Successfully!')
+            # insert the user into the UserDepartment table
+            user = User.objects.get(username=form.cleaned_data['username'])
+            userDepartment = UserDepartment()
+            userDepartment.user = user
+            userDepartment.department = Department.objects.get(id=request.POST.get("department"))
+            userDepartment.save()
             return redirect(reverse('getAllUsers'))
     return redirect('getAllUsers')
 
@@ -140,11 +145,10 @@ def getAllUsers(request):
     return render(request, 'all_users.html', {'user_list': user_list, 'create_user_form': userForm})
 
 
+# when user clicks on the delete button, the user will be removed from the database
 def deactivate_user(request, username):
     user = User.objects.get(username=username)
-    user.is_active = False
-    user.is_staff = False
-    user.save()
+    user.delete()
     return redirect(reverse('getAllUsers'))
 
 
@@ -198,6 +202,8 @@ def getUserInfo(request, username):
         'first_name': user_to_edit.first_name,
         'last_name': user_to_edit.last_name,
         'email': user_to_edit.email,
+        # get the department name from the userdepartment table
+        'department': UserDepartment.objects.get(user=user_to_edit).department.name,
     }
     userForm = EditUserForm(initial=initial_values)
     context = {'form': userForm, 'user_to_edit': user_to_edit, 'user': user}

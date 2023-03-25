@@ -1,6 +1,7 @@
 {% extends 'navbar.html' %}
 
 {% block content %}
+
     <!-- User Dashboard Begins Here -->
     <div class="container container-lg mt-2 mb-5 bg-body">
         <!-- Welcome -->
@@ -25,6 +26,7 @@
                         <th scope="col">Username</th>
                         <th scope="col">First Name</th>
                         <th scope="col">Last Name</th>
+                        <th scope="col">Department</th>
                         <th scope="col">Email</th>
                         <th scope="col"></th>
                     </tr>
@@ -35,6 +37,9 @@
                             <th scope="row">{{ user.username }}</th>
                             <td>{{ user.first_name }}</td>
                             <td>{{ user.last_name }}</td>
+                            <!-- get the name of the department of a user. The name is in the Department table and the information is in the UserDepartment table-->
+                            <td>{{ user.userdepartment_set.all.0.department.name }}</td>
+
                             <td>{{ user.email }}</td>
                             <td class="text-end">
                                 <a href="{% url 'user_info' user.username %}">
@@ -62,16 +67,16 @@
                 <form action="register" method="POST" class="form p-4" id="formCreateUser">
                     {% csrf_token %}
                     <div class="modal-body">
+                        <div id="passwordsMatch">Passwords do not match</div>
                         <!-- Looping through the form fields-->
                         {% for field in create_user_form %}
-{#                            <!-- Group every 2 fields together into a div -->#}
+                                {# <!-- Group every 2 fields together into a div -->#}
                             {% if forloop.counter0|divisibleby:2 %}
                                 <div class="row d-flex flex-wrap justify-content-between mb-3">
                                     <div class="col-11 col-md-5 mx-4">
                                         {{ field.label }}
                                         {{ field }}
                                     </div>
-
                             {% else %}
                                     <div class="col-11 col-md-5 mx-4">
                                         {{ field.label }}
@@ -80,6 +85,7 @@
                                 </div>
                             {% endif %}
                         {% endfor %}
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
