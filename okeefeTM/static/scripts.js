@@ -88,6 +88,7 @@ function setPrioColor(tPrio){ //tPrio is a jQuery object
 
     // We will need to change the ID for these selectors because they are the same as the create_task form. We cannot have 2 elements with the same id
 function showTaskInfo(tID, tName, tStatus, tCat, tUser, tPrio, tCreated, tDue, tDesc, tRepeat, tNote){
+    console.log(typeof tUser);
     $.ajax({
         url: 'mark_as_seen',
         type: 'get',

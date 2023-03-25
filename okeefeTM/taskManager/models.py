@@ -3,6 +3,9 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 
+def get_admin_user():
+    return User.objects.get(username='admin')
+
 # Create your models here.
 class Department(models.Model):
     name = models.CharField(max_length=30)
@@ -51,7 +54,7 @@ class Task(models.Model):
         (MONTHLY, "Month(s)"),
         (ANNUAL, "Year(s)"),
     ] 
-    user = models.ForeignKey(User, on_delete=models.RESTRICT, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.RESTRICT, null=True, blank=True, default=get_admin_user)
     category = models.ForeignKey(Category, on_delete=models.RESTRICT)
     name = models.CharField(max_length=150)
     desc = models.CharField(max_length=255)
