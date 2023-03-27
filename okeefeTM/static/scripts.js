@@ -14,47 +14,16 @@ $(document).ready(function () {
     $('#formCreateTask').on('change', '#id_create_repeat', function () {
         toggleRepeatOptions($('#id_create_repeat'), 'create');
     })
-
     $('#formEditTask').on('change', '#id_edit_repeat', function () {
         toggleRepeatOptions($('#id_edit_repeat'), 'edit');
     })
 
     // if the two passwords do not match, show the error message
-    $('#formCreateUser').on('change', '#id_create_password1', function () {
-        checkPasswordMatch();
-
-        function checkPasswordMatch() {
-            const password = $("#id_create_password1").val();
-            const confirmPassword = $("#id_create_password2").val();
-
-            if (password !== confirmPassword) {
-                $("#passwordsMatch").show();
-                $("#formCreateUser").submit(function (e) {
-                    e.preventDefault();
-                });
-            } else {
-                $("#passwordsMatch").hide();
-                $("#formCreateUser").unbind('submit');
-            }
-        }
-    })
-    // if the two passwords do not match, show the error message
-    $('#formCreateUser').on('change', '#id_create_password2', function () {
-        checkPasswordMatch();
-
-        function checkPasswordMatch() {
-            const password = $("#id_create_password1").val();
-            const confirmPassword = $("#id_create_password2").val();
-
-            if (password !== confirmPassword) {
-                $("#passwordsMatch").show();
-                $("#formCreateUser").submit(function (e) {
-                    e.preventDefault();
-                });
-            } else {
-                $("#passwordsMatch").hide();
-                $("#formCreateUser").unbind('submit');
-            }
+    $('#formCreateUser').on('keyup', '#id_create_password1, #id_create_password2', function () {
+        let password1 = $("#id_create_password1").val();
+        let password2 = $("#id_create_password2").val();
+        if (validatePassword(password1)){
+            checkPasswordMatch(password1, password2);
         }
     })
 
@@ -227,4 +196,19 @@ function confirmSetManager(event, username, url) {
     }
 }
 
-//
+function validatePassword(password){
+    // Do something to check password validity
+    return true;
+}
+
+function checkPasswordMatch(password1, password2){
+    let saveButton = $("#id_create_user_save");
+    let errorMessage = $("#id_password_error");
+    if (password1 === password2){
+        errorMessage.addClass("d-none");
+        saveButton.removeAttr("disabled");
+    } else {
+        errorMessage.removeClass("d-none");
+        saveButton.attr("disabled", "disabled");
+    }
+}

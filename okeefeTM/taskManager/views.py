@@ -125,6 +125,7 @@ def register(request):
     if request.method == "POST":
         form = CreateUserForm(request.POST)
         if form.is_valid():
+            print("CREATE USER FORM IS VALID")
             form.save()
             # insert the user into the UserDepartment table
             user = User.objects.get(username=form.cleaned_data['username'])
@@ -133,6 +134,8 @@ def register(request):
             userDepartment.department = Department.objects.get(id=request.POST.get("department"))
             userDepartment.save()
             return redirect(reverse('getAllUsers'))
+        else:
+            print("CREATE USER FORM IS INVALID")
     return redirect('getAllUsers')
 
 

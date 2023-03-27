@@ -67,7 +67,6 @@
                 <form action="register" method="POST" class="form p-4" id="formCreateUser">
                     {% csrf_token %}
                     <div class="modal-body">
-                        <div id="passwordsMatch">Passwords do not match</div>
                         <!-- Looping through the form fields-->
                         {% for field in create_user_form %}
                                 {# <!-- Group every 2 fields together into a div -->#}
@@ -87,9 +86,10 @@
                         {% endfor %}
 
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer d-flex">
+                        <div id="id_password_error" class="text-danger d-none">Passwords do not match</div>
                         <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-lg text-light" value="">Save</button>
+                        <button id="id_create_user_save" type="submit" class="btn btn-primary btn-lg text-light" value="">Save</button>
                     </div>
                 </form>
             </div>
