@@ -65,6 +65,12 @@ def create_task(request):
             form.save()
     return redirect('home')
 
+def delete_task(request):
+    task_id = request.GET.get('id')
+    task = Task.objects.filter(id=task_id)
+    task.delete()
+    return redirect('home')
+    
 
 def createRepeatingTasks():
     repeatingTasks = Task.objects.filter(repeat=True).exclude(date_completed=None)

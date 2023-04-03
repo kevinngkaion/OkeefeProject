@@ -13,6 +13,16 @@ $(document).ready(function () {
         toggleRepeatOptions($('#id_edit_repeat'), 'edit');
     })
 
+    // onclick listener for deleting task
+    $('#id_delete_task_button').on('click', function(event){
+        event.preventDefault(); // prevent the default behaviour of this element from executing
+        let confirmed = confirm("Are you sure you want to delete this task?");
+        if (confirmed){
+            window.location.href = $(this).attr('href');
+        }
+    });
+
+
     $('#tasksTable').DataTable(); //This needs to be at the end so that the formatting can be done first before the table is output
     $('#usersTable').DataTable(); //This needs to be at the end so that the formatting can be done first before the table is output
 });
@@ -110,9 +120,10 @@ function showTaskInfo(tID, tName, tStatus, tCat, tUser, tPrio, tCreated, tDue, t
     let category = $('#id_edit_category')
     let prio = $('#id_edit_priority');
     let due = $('#id_edit_due');
-    let repeat = $('#id_edit_repeat')
+    let repeat = $('#id_edit_repeat');
     let date = new Date(tDue);
     let dueDate = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+    let deleteBtn = $('#id_delete_task_button');
     note.val(tNote);
     id.val(tID);
     status.val(tStatus);
@@ -124,6 +135,7 @@ function showTaskInfo(tID, tName, tStatus, tCat, tUser, tPrio, tCreated, tDue, t
     prio.val(tPrio);
     due.val(dueDate);
     repeat.val(tRepeat);
+    deleteBtn.attr('href', 'delete_task?id=' + tID);
 }
 
 function toggleEdit(){

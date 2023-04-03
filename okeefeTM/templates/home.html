@@ -143,9 +143,18 @@
                     {% endif %}
                     {% endfor %}
                 </div>
+                {% if user.is_staff %}
+                <div class="modal-footer d-flex justify-content-between">
+                    <div>
+                        <a id="id_delete_task_button" href="" class="btn btn-danger btn-lg">Delete</a>
+                    </div>
+                {% else %}
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-lg" onclick="toggleEdit()">Edit</button>
-                    <button id="save_edit" disabled type="submit" class="btn btn-primary btn-lg text-light" value="">Save</button>
+                {% endif %}
+                    <div>
+                        <button type="button" class="btn btn-secondary btn-lg" onclick="toggleEdit()">Edit</button>
+                        <button id="save_edit" disabled type="submit" class="btn btn-primary btn-lg text-light" value="">Save</button>
+                    </div>
                 </div>
             </form>
         </div>
