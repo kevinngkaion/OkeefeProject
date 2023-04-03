@@ -43,19 +43,19 @@ $(document).ready(function () {
     // Custom sorting function to sort the dates
     $.fn.dataTable.ext.type.order['date-string-pre'] = function(date) {
         var parts = date.split(' ');
-        var month = parts[0].replace('.', '');
+        var month = parts[0].substring(0, 3);
         var day = parts[1].replace(',', '');
         var year = parts[2];
         var monthIndex = {
           'Jan': 0,
           'Feb': 1,
-          'March': 2,
-          'April': 3,
+          'Mar': 2,
+          'Apr': 3,
           'May': 4,
-          'June': 5,
-          'July': 6,
+          'Jun': 5,
+          'Jul': 6,
           'Aug': 7,
-          'Sept': 8,
+          'Sep': 8,
           'Oct': 9,
           'Nov': 10,
           'Dec': 11
