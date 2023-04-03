@@ -1,3 +1,21 @@
+// $.fn.dataTable.moment = function(format, locale){
+//     var types = $.fn.dataTable.ext.type;
+ 
+//     // Add type detection
+//     types.detect.unshift(function(d){
+//         if (moment(d, format, locale, true).isValid())
+//             return 'moment-'+format;
+//         return null;
+//     } );
+ 
+//     // Add sorting method - use an integer for the sorting
+//     types.order['moment-'+format+'-pre'] = function(d){
+//         return moment( d, format, locale, true ).unix();
+//     };
+// };
+
+
+
 $(document).ready(function () {
     console.log("DOCUMENT READY");
     // Set colours for task status
@@ -22,9 +40,36 @@ $(document).ready(function () {
         }
     });
 
+    // Custom sorting function to sort the dates
+    $.fn.dataTable.ext.type.order['date-string-pre'] = function(date) {
+        var parts = date.split(' ');
+        var month = parts[0].replace('.', '');
+        var day = parts[1].replace(',', '');
+        var year = parts[2];
+        var monthIndex = {
+          'Jan': 0,
+          'Feb': 1,
+          'March': 2,
+          'April': 3,
+          'May': 4,
+          'June': 5,
+          'July': 6,
+          'Aug': 7,
+          'Sept': 8,
+          'Oct': 9,
+          'Nov': 10,
+          'Dec': 11
+        }[month];
+        return new Date(year, monthIndex, day).getTime();
+      };
 
-    $('#tasksTable').DataTable(); //This needs to be at the end so that the formatting can be done first before the table is output
-    $('#usersTable').DataTable(); //This needs to be at the end so that the formatting can be done first before the table is output
+    // These instatiate the DataTables. These need to be at the end so that the formatting can be done first before the table is output
+    $('#tasksTable').DataTable({
+        columnDefs:[
+            {type: 'date-string', targets: [5, 6]}
+        ]
+    });
+    $('#usersTable').DataTable();
 });
 
 
