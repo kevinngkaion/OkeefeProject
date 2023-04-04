@@ -54,6 +54,8 @@ def get_tasks(user, tasks_to_get):      # This function filters the tasks
         tasks = Task.objects.filter(status=Task.UNASSIGNED)
     elif tasks_to_get == 'completed':
         tasks = Task.objects.filter(status=Task.COMPLETE)
+    elif tasks_to_get == 'repeating':
+        tasks = Task.objects.filter(repeat=True)
     return tasks
 
 
