@@ -172,7 +172,11 @@ function showTaskInfo(tID, tName, tStatus, tCat, tUser, tPrio, tCreated, tDue, t
     $('#id_delete_task_button').attr('href', 'delete_task?id=' + tID);
     $('#id_edit_interval').val(tInterval);
     $('#id_edit_intervalLength').val(intervalLength);
-    $('#id_edit_repeat_interval').removeClass("d-none");
+    if (repeat.val() == "True"){
+        $('#id_edit_repeat_interval').removeClass("d-none");
+    } else {
+        $('#id_edit_repeat_interval').addClass("d-none");
+    }
 }
 
 function toggleEdit(){
