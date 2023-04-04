@@ -21,11 +21,16 @@ def index(request):
 
 
 def home(request):
-    if not request.user.is_authenticated:  # redirect user to login if they are not authenticated
+    user = request.user        
+    if not user.is_authenticated:   #redirect user to login if they are not authenticated
         return redirect('login')
-
-    createRepeatingTasks()
-    tasks = Task.objects.all()
+    
+    if request.GET.get('filter'):   
+        tasks = get_tasks(user, request.GET.get('filter'))    #Filter tasks if there is a get param
+    elif user.is_staff:
+        tasks = Task.objects.all()
+    else:
+        tasks = Task.objects.filter(user=user)
     task_model = Task()
     createtask = TaskForm
     edittask = EditTaskForm
@@ -40,6 +45,18 @@ def home(request):
     return render(request, 'home.html', context)
 
 
+def get_tasks(user, tasks_to_get):      # This function filters the tasks
+    if tasks_to_get == 'all':
+        tasks = Task.objects.all()
+    elif tasks_to_get == 'user':
+        tasks = Task.objects.filter(user=user)
+    elif tasks_to_get == 'unassigned':
+        tasks = Task.objects.filter(status=Task.UNASSIGNED)
+    elif tasks_to_get == 'completed':
+        tasks = Task.objects.filter(status=Task.COMPLETE)
+    return tasks
+
+
 def create_task(request):
     createtaskForm = TaskForm
     if request.method == "POST":
@@ -48,6 +65,13 @@ def create_task(request):
             form.save()
     return redirect('home')
 
+
+def delete_task(request):
+    task_id = request.GET.get('id')
+    task = Task.objects.filter(id=task_id)
+    task.delete()
+    return redirect('home')
+    
 
 def createRepeatingTasks():
     repeatingTasks = Task.objects.filter(repeat=True).exclude(date_completed=None)
@@ -248,15 +272,19 @@ def update_task_status(request):
     return JsonResponse({'msg': 'Status of this task has been updated'}, status=200)  # Status 200 if successfull.
 
 
-# Need to check if this is working properly. Was not working for me
+# Modified this code so that the isSeen html element will show
 def mark_as_seen(request):
-    if User.objects.get(id=request.GET.get("tUID")) == request.user:
+    task = Task.objects.get(id=request.GET.get("taskID"))
+    task_user = task.user.first_name
+    msg = "This task has been seen by " + task_user
+    if task.isSeen:
+        print("Task has already been seen by " + task.user.first_name)
+        return JsonResponse({"msg": msg}, status=200)
+    elif task.user == request.user:
         print("Its you")
-        seentask = Task.objects.get(id=request.GET.get("taskID"))
-        if not seentask.isSeen:
-            seentask.isSeen = True
-            seentask.save()
-        return JsonResponse({"msg": "somejt"}, status=200)
+        task.isSeen = True
+        task.save()
+        return JsonResponse({"msg": msg}, status=201)
     else:
         print("Not you at all")
-        return JsonResponse({"msg": 'not you'}, status=111)
+        return JsonResponse({"msg": 'This task has not yet been seen'}, status=204)

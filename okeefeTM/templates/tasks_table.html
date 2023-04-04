@@ -1,0 +1,35 @@
+<tbody id="taskTable">
+    {% for task in tasks %}
+    <tr id="task{{task.id}}">
+        <th scope="row">{{ task.name }}</th>
+        <td>
+            <button type="button" class="task-status btn btn-sm dropdown-toggle w-100 text-end" data-bs-toggle="dropdown" aria-expanded="false">
+                {{task.get_status_display}}
+            </button>
+            <ul class="dropdown-menu">
+                {% for choice in choices %}
+                {% if choice.0 != 0 %}
+                <li><button class="dropdown-item" onclick="changeStatus({{task.id}}, {{choice.0}}, '{{choice.1}}')">{{choice.1}}</button></li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </td>
+        <td>{{ task.category }}</td>
+        <td>{{ task.user }}</td>
+        <td><div class='task-prio'>{{ task.get_priority_display }}</div></td>
+        <td>{{ task.date_created }}</td>
+        <td>{{ task.date_due }}</td>
+        <td class="text-center"><button class="btn btn-primary text-light" data-bs-toggle="modal" data-bs-target="#modalViewTask" onclick="showTaskInfo({{ task.id }},
+            '{{ task.name }}',
+            {{task.status}},
+            {{task.category.id}},
+            {{task.user.id}},
+                {{task.priority}},
+                '{{task.date_created}}',
+                '{{task.date_due}}',
+                '{{task.desc}}',
+                    '{{task.repeat}}',
+                    '{{task.note}}')">View Task</button></td>
+    </tr>
+    {% endfor %}
+</tbody>

@@ -11,13 +11,17 @@
     <div class="container bg-body mt-5 p-4 border shadow-sm px-4 rounded">
         <!-- TASK NAVIGATION BAR -->
         <div id="task-nav" class="d-flex justify-content-between mt-1 mb-4">
+            {% if user.is_staff %}
+            <div class="col-6 d-flex justify-content-between">
+            {% else %}
             <div class="col-4 d-flex justify-content-between">
-                <button class="btn btn-primary text-light text-uppercase" type="button" onclick="showMyTasks()">My
-                    Tasks</button>
-                <button class="btn btn-primary text-light text-uppercase" type="button" onclick="showAllTasks()">All
-                    Tasks</button>
-                <button class="btn btn-primary text-light text-uppercase" type="button"
-                    onclick="showUnassignedTasks()">Unassigned Tasks</button>
+            {% endif %}
+                <a href='home?filter=user'><button class="btn btn-primary text-light text-uppercase" type="button">My Tasks</button></a>
+                <a href='home?filter=all'><button class="btn btn-primary text-light text-uppercase" type="button">All Tasks</button></a>
+                <a href='home?filter=unassigned'><button class="btn btn-primary text-light text-uppercase" type="button">Unassigned Tasks</button></a>
+                {% if user.is_staff %}
+                <a href='home?filter=completed'><button class="btn btn-primary text-light text-uppercase" type="button">Completed Tasks</button></a>
+                {% endif %}
             </div>
             <!-- if the user is not a staff, they cannot create tasks -->
             {% if user.is_staff %}
@@ -60,7 +64,12 @@
                         </ul>
                     </td>
                     <td>{{ task.category }}</td>
-                    <td>{{ task.user }}</td>
+                    <td>{% if not task.user.first_name.isalnum %}
+                        {{task.user}}
+                        {% else %}
+                        {{task.user.first_name}}
+                        {% endif %}
+                    </td>
                     <td><div class='task-prio'>{{ task.get_priority_display }}</div></td>
                     <td>{{ task.date_created }}</td>
                     <td>{{ task.date_due }}</td>
@@ -136,10 +145,20 @@
                     </div>
                     {% endif %}
                     {% endfor %}
+                    <div id="id_task_isSeen" class="text-end px-4 fst-italic fw-lighter"></div>
                 </div>
+                {% if user.is_staff %}
+                <div class="modal-footer d-flex justify-content-between">
+                    <div>
+                        <a id="id_delete_task_button" href="" class="btn btn-danger btn-lg">Delete</a>
+                    </div>
+                {% else %}
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-lg" onclick="toggleEdit()">Edit</button>
-                    <button id="save_edit" disabled type="submit" class="btn btn-primary btn-lg text-light" value="">Save</button>
+                {% endif %}
+                    <div>
+                        <button type="button" class="btn btn-secondary btn-lg" onclick="toggleEdit()">Edit</button>
+                        <button id="save_edit" disabled type="submit" class="btn btn-primary btn-lg text-light" value="">Save</button>
+                    </div>
                 </div>
             </form>
         </div>
