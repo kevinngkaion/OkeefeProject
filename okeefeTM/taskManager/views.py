@@ -21,6 +21,7 @@ def index(request):
 
 
 def home(request):
+    repeatsCreated = createRepeatingTasks()
     user = request.user        
     if not user.is_authenticated:   #redirect user to login if they are not authenticated
         return redirect('login')
@@ -41,6 +42,7 @@ def home(request):
         'editform': edittask,
         'tasks': tasks,
         'choices': status_choices,
+        'numOfRepeat': repeatsCreated,
     }
     return render(request, 'home.html', context)
 
@@ -54,6 +56,8 @@ def get_tasks(user, tasks_to_get):      # This function filters the tasks
         tasks = Task.objects.filter(status=Task.UNASSIGNED)
     elif tasks_to_get == 'completed':
         tasks = Task.objects.filter(status=Task.COMPLETE)
+    elif tasks_to_get == 'repeating':
+        tasks = Task.objects.filter(repeat=True)
     return tasks
 
 
@@ -74,6 +78,7 @@ def delete_task(request):
     
 
 def createRepeatingTasks():
+    repeatCount = 0
     repeatingTasks = Task.objects.filter(repeat=True).exclude(date_completed=None)
     for task in repeatingTasks:
         interval = task.interval
@@ -114,28 +119,32 @@ def createRepeatingTasks():
             # Set the old task repeats to false
             task.repeat = False
             task.save()
-    return
+            repeatCount += 1
+    return repeatCount
 
 
 def edit_task(request):
     print("edit task")
     if request.method == "POST":
-        edittask = Task.objects.get(id=request.POST.get("id"))
-        edittask.note = request.POST.get("note")
-        edittask.desc = request.POST.get("desc")
-        edittask.user = User.objects.get(id=request.POST.get("user"))
-        edittask.priority = request.POST.get("priority")
+        task = Task.objects.get(id=request.POST.get("id"))
+        task.note = request.POST.get("note")
+        task.desc = request.POST.get("desc")
+        new_user = User.objects.get(id=request.POST.get("user"))
+        if (task.user != new_user):
+            task.user = new_user
+            task.isSeen = False
+        task.priority = request.POST.get("priority")
         if (request.POST.get("date_due") != ""):
-            edittask.date_due = request.POST.get("date_due")
-        edittask.repeat = request.POST.get("repeat")
-        edittask.category = Category.objects.get(id=request.POST.get("category"))
-        edittask.interval = request.POST.get("interval")
-        edittask.intervalLength = request.POST.get("intervalLength")
-        edittask.save()
-        print(request.POST)
+            task.date_due = request.POST.get("date_due")
+        task.repeat = request.POST.get("repeat")
+        task.category = Category.objects.get(id=request.POST.get("category"))
+        task.interval = request.POST.get("interval")
+        task.intervalLength = request.POST.get("intervalLength")
+        task.save()
+        print("Task was updated successfully")
         return redirect('home')
     else:
-        print("No good")
+        print("Task was not edited. There was an error")
         return redirect('home')
 
 
@@ -157,7 +166,8 @@ def register(request):
             userDepartment.user = user
             userDepartment.department = Department.objects.get(id=request.POST.get("department"))
             userDepartment.save()
-            return redirect(reverse('getAllUsers'))
+            print(user.username)
+            return redirect(reverse('getAllUsers') + '?status=created&user=' + user.username)
         else:
             print("CREATE USER FORM IS INVALID")
     return redirect('getAllUsers')
@@ -169,21 +179,36 @@ def getAllUsers(request):
 
     user_list = User.objects.filter(is_active=True)
     userForm = CreateUserForm
-    return render(request, 'all_users.html', {'user_list': user_list, 'create_user_form': userForm})
+    status = request.GET.get('status')
+    name = request.GET.get('user')
+    context = {
+        'user_list': user_list,
+        'create_user_form': userForm,
+        'status': status,
+        'name': name,
+    }
+    return render(request, 'all_users.html', context)
 
 
 # when user clicks on the delete button, the user will be removed from the database
 def deactivate_user(request, username):
     user = User.objects.get(username=username)
+    name = user.first_name
+    tasks = Task.objects.filter(user=user)
+    for task in tasks:
+        task.user = User.objects.get(username='admin')
+        task.save()
+    user_dept = UserDepartment.objects.get(user=user)
+    user_dept.delete()
     user.delete()
-    return redirect(reverse('getAllUsers'))
+    return redirect(reverse('getAllUsers') + '?status=deleted&user=' + name)
 
 
 def set_as_manager(request, username):
     user = User.objects.get(username=username)
     user.is_staff = True
     user.save()
-    return redirect(reverse('getAllUsers'))
+    return redirect(reverse('getAllUsers') + '?status=managerSet&user=' + user.username)
 
 
 def update_user(request, username):
@@ -216,7 +241,10 @@ def reset_password(request, username):
             # user.password = form.cleaned_data['password1']
             user.set_password(form.cleaned_data['password1'])
             user.save()
-            return redirect('login')
+            if request.user.is_staff:
+                return redirect(reverse('getAllUsers') + '?status=reset&user=' + user.username)
+            else:
+                return redirect('login')
     context = {'form': userForm, 'user': user}
     return render(request, 'reset_password.html', context)
 
@@ -278,7 +306,7 @@ def mark_as_seen(request):
     task_user = task.user.first_name
     msg = "This task has been seen by " + task_user
     if task.isSeen:
-        print("Task has already been seen by " + task.user.first_name)
+        print("Task has already been seen by " + task_user)
         return JsonResponse({"msg": msg}, status=200)
     elif task.user == request.user:
         print("Its you")
@@ -288,6 +316,7 @@ def mark_as_seen(request):
     else:
         print("Not you at all")
         return JsonResponse({"msg": 'This task has not yet been seen'}, status=204)
+
 
 #forget password
 def ForgetPassword(request):

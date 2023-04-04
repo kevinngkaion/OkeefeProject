@@ -3,6 +3,12 @@
 {% block content %}
 <!-- Task Dashboard Begins Here -->
 <div class="container container-lg mt-5">
+    <!-- Alert if repeating task was created -->
+    {% if numOfRepeat > 0 %}
+        <div class="alert alert-warning" role="alert">
+            {{numOfRepeat}} repeating tasks have been created
+        </div>
+    {% endif %}
     <!-- Welcome -->
     <div class="text-center">
         <h1>Welcome, {{user.first_name}}!</h1> <!-- INSERT USER's NAME HERE -->
@@ -12,7 +18,7 @@
         <!-- TASK NAVIGATION BAR -->
         <div id="task-nav" class="d-flex justify-content-between mt-1 mb-4">
             {% if user.is_staff %}
-            <div class="col-6 d-flex justify-content-between">
+            <div class="col-8 d-flex justify-content-between">
             {% else %}
             <div class="col-4 d-flex justify-content-between">
             {% endif %}
@@ -21,6 +27,7 @@
                 <a href='home?filter=unassigned'><button class="btn btn-primary text-light text-uppercase" type="button">Unassigned Tasks</button></a>
                 {% if user.is_staff %}
                 <a href='home?filter=completed'><button class="btn btn-primary text-light text-uppercase" type="button">Completed Tasks</button></a>
+                <a href='home?filter=repeating'><button class="btn btn-primary text-light text-uppercase" type="button">Repeating Tasks</button></a>
                 {% endif %}
             </div>
             <!-- if the user is not a staff, they cannot create tasks -->
@@ -73,17 +80,19 @@
                     <td><div class='task-prio'>{{ task.get_priority_display }}</div></td>
                     <td>{{ task.date_created }}</td>
                     <td>{{ task.date_due }}</td>
-                    <td class="text-center"><button class="btn btn-primary text-light" data-bs-toggle="modal" data-bs-target="#modalViewTask" onclick="showTaskInfo({{ task.id }},
-                     '{{ task.name }}',
-                      {{task.status}},
-                       {{task.category.id}},
+                    <td class="text-center"><button class="btn btn-primary text-light" data-bs-toggle="modal" data-bs-target="#modalViewTask" onclick='showTaskInfo({{ task.id }},
+                        "{{task.name}}",
+                        {{task.status}},
+                        {{task.category.id}},
                         {{task.user.id}},
-                         {{task.priority}},
-                          '{{task.date_created}}',
-                           '{{task.date_due}}',
-                            '{{task.desc}}',
-                             '{{task.repeat}}',
-                             '{{task.note}}')">View Task</button></td>
+                        {{task.priority}},
+                        "{{task.date_created}}",
+                        "{{task.date_due}}",
+                        "{{task.desc}}",
+                        "{{task.repeat}}",
+                        "{{task.note}}",
+                        "{{task.interval}}",
+                        "{{task.intervalLength}}")'>View Task</button></td>
                 </tr>
                 {% endfor %}
             </tbody>

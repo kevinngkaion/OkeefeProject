@@ -131,7 +131,8 @@ function setPrioColor(tPrio){ //tPrio is a jQuery object
 }
 
     // We will need to change the ID for these selectors because they are the same as the create_task form. We cannot have 2 elements with the same id
-function showTaskInfo(tID, tName, tStatus, tCat, tUser, tPrio, tCreated, tDue, tDesc, tRepeat, tNote){
+function showTaskInfo(tID, tName, tStatus, tCat, tUser, tPrio, tCreated, tDue, tDesc, tRepeat, tNote, tInterval, tIntervalLength){
+    console.log(tInterval);
     let isSeen = $('#id_task_isSeen');
     $.ajax({
         url: 'mark_as_seen',
@@ -148,35 +149,30 @@ function showTaskInfo(tID, tName, tStatus, tCat, tUser, tPrio, tCreated, tDue, t
             },
             204: (response) => {
                 console.log("\nThis task has not yet been seen\n");
+                isSeen.html('');
             }
         }
     });
-    let note = $('#id_edit_note');
-    let id = $('#id_edit_id');
-    let desc = $('#id_edit_desc');
-    let title = $('#modalHeaderViewTask');
-    let user = $('#id_edit_assignedTo');
-    let status = $('#id_edit_status');
-    let name = $('#id_edit_name');
-    let category = $('#id_edit_category')
-    let prio = $('#id_edit_priority');
     let due = $('#id_edit_due');
     let repeat = $('#id_edit_repeat');
     let date = new Date(tDue);
     let dueDate = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
-    let deleteBtn = $('#id_delete_task_button');
-    note.val(tNote);
-    id.val(tID);
-    status.val(tStatus);
-    desc.val(tDesc);
-    title.html(tName);
-    user.val(tUser);
-    name.val(tName);
-    category.val(tCat);
-    prio.val(tPrio);
+    let intervalLength = parseInt(tIntervalLength);
+    $('#id_edit_note').val(tNote);
+    $('#id_edit_id').val(tID);
+    $('#id_edit_status').val(tStatus);
+    $('#id_edit_desc').val(tDesc);
+    $('#modalHeaderViewTask').html(tName);
+    $('#id_edit_assignedTo').val(tUser);
+    $('#id_edit_name').val(tName);
+    $('#id_edit_category').val(tCat);
+    $('#id_edit_priority').val(tPrio);
     due.val(dueDate);
     repeat.val(tRepeat);
-    deleteBtn.attr('href', 'delete_task?id=' + tID);
+    $('#id_delete_task_button').attr('href', 'delete_task?id=' + tID);
+    $('#id_edit_interval').val(tInterval);
+    $('#id_edit_intervalLength').val(intervalLength);
+    $('#id_edit_repeat_interval').removeClass("d-none");
 }
 
 function toggleEdit(){
@@ -191,6 +187,8 @@ function toggleEdit(){
     $('#id_edit_due').prop("disabled", !$('#id_edit_due').prop("disabled"));
     $('#id_edit_repeat').prop("disabled", !$('#id_edit_repeat').prop("disabled"));
     $('#save_edit').prop("disabled", !$('#save_edit').prop("disabled"));
+    $('#id_edit_interval').prop("disabled", !$('#id_edit_interval').prop("disabled"));
+    $('#id_edit_intervalLength').prop("disabled", !$('#id_edit_intervalLength').prop("disabled"));
 }
 
 function changeStatus(taskID, newStatusID, newStatusName){
