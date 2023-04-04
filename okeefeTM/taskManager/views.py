@@ -22,12 +22,13 @@ def index(request):
 
 def home(request):
     repeatsCreated = createRepeatingTasks()
-    user = request.user        
+    user = request.user
+    task_filter = request.GET.get('filter')
     if not user.is_authenticated:   #redirect user to login if they are not authenticated
         return redirect('login')
     
-    if request.GET.get('filter'):   
-        tasks = get_tasks(user, request.GET.get('filter'))    #Filter tasks if there is a get param
+    if task_filter:   
+        tasks = get_tasks(user, task_filter)    #Filter tasks if there is a get param
     elif user.is_staff:
         tasks = Task.objects.all()
     else:
@@ -43,7 +44,9 @@ def home(request):
         'tasks': tasks,
         'choices': status_choices,
         'numOfRepeat': repeatsCreated,
+        'filter': task_filter,
     }
+    print(task_filter)
     return render(request, 'home.html', context)
 
 
@@ -296,6 +299,8 @@ def user_logout(request):
 def update_task_status(request):
     task = Task.objects.get(id=request.GET.get("taskID"))
     task.status = request.GET.get("newStatusID")
+    if task.date_completed is None and task.status is '3':
+        task.date_completed = date.today()
     task.save()
     return JsonResponse({'msg': 'Status of this task has been updated'}, status=200)  # Status 200 if successfull.
 
