@@ -288,3 +288,26 @@ def mark_as_seen(request):
     else:
         print("Not you at all")
         return JsonResponse({"msg": 'This task has not yet been seen'}, status=204)
+
+#forget password
+def ForgetPassword(request):
+    try:
+        if request.method == 'POST':
+            username = request.POST.get('username')
+
+            if not User.objects.filter(username=username).first():
+                messages.success(request,'No user found with this username')
+                return redirect('forget_password.html')
+
+            user_obj =User.objects.get(username=username)
+            token = str(uuid.uuid4())
+            profile_obj = Profile.objects.get(user = user_obj)
+            profile_obj.forget_password_token = token
+            profile.obj.save()
+            send_forget_password_mail(user_obj.email, token)
+            messages.success(request, 'An email is sent.')
+            return redirect('forget_password.html')
+
+    except Exception as e:
+        print(e)
+    return render(request, 'forget_password.html')
