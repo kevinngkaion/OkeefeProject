@@ -160,7 +160,8 @@ def register(request):
             userDepartment.user = user
             userDepartment.department = Department.objects.get(id=request.POST.get("department"))
             userDepartment.save()
-            return redirect(reverse('getAllUsers'))
+            print(user.username)
+            return redirect(reverse('getAllUsers') + '?status=created&user=' + user.username)
         else:
             print("CREATE USER FORM IS INVALID")
     return redirect('getAllUsers')
@@ -172,21 +173,36 @@ def getAllUsers(request):
 
     user_list = User.objects.filter(is_active=True)
     userForm = CreateUserForm
-    return render(request, 'all_users.html', {'user_list': user_list, 'create_user_form': userForm})
+    status = request.GET.get('status')
+    name = request.GET.get('user')
+    context = {
+        'user_list': user_list,
+        'create_user_form': userForm,
+        'status': status,
+        'name': name,
+    }
+    return render(request, 'all_users.html', context)
 
 
 # when user clicks on the delete button, the user will be removed from the database
 def deactivate_user(request, username):
     user = User.objects.get(username=username)
+    name = user.first_name
+    tasks = Task.objects.filter(user=user)
+    for task in tasks:
+        task.user = User.objects.get(username='admin')
+        task.save()
+    user_dept = UserDepartment.objects.get(user=user)
+    user_dept.delete()
     user.delete()
-    return redirect(reverse('getAllUsers'))
+    return redirect(reverse('getAllUsers') + '?status=deleted&user=' + name)
 
 
 def set_as_manager(request, username):
     user = User.objects.get(username=username)
     user.is_staff = True
     user.save()
-    return redirect(reverse('getAllUsers'))
+    return redirect(reverse('getAllUsers') + '?status=managerSet&user=' + user.username)
 
 
 def update_user(request, username):
@@ -219,7 +235,10 @@ def reset_password(request, username):
             # user.password = form.cleaned_data['password1']
             user.set_password(form.cleaned_data['password1'])
             user.save()
-            return redirect('login')
+            if request.user.is_staff:
+                return redirect(reverse('getAllUsers') + '?status=reset&user=' + user.username)
+            else:
+                return redirect('login')
     context = {'form': userForm, 'user': user}
     return render(request, 'reset_password.html', context)
 
