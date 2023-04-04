@@ -252,15 +252,19 @@ def update_task_status(request):
     return JsonResponse({'msg': 'Status of this task has been updated'}, status=200)  # Status 200 if successfull.
 
 
-# Need to check if this is working properly. Was not working for me
+# Modified this code so that the isSeen html element will show
 def mark_as_seen(request):
-    if User.objects.get(id=request.GET.get("tUID")) == request.user:
+    task = Task.objects.get(id=request.GET.get("taskID"))
+    task_user = task.user.first_name
+    msg = "This task has been seen by " + task_user
+    if task.isSeen:
+        print("Task has already been seen by " + task.user.first_name)
+        return JsonResponse({"msg": msg}, status=200)
+    elif task.user == request.user:
         print("Its you")
-        seentask = Task.objects.get(id=request.GET.get("taskID"))
-        if not seentask.isSeen:
-            seentask.isSeen = True
-            seentask.save()
-        return JsonResponse({"msg": "somejt"}, status=200)
+        task.isSeen = True
+        task.save()
+        return JsonResponse({"msg": msg}, status=201)
     else:
         print("Not you at all")
-        return JsonResponse({"msg": 'not you'}, status=111)
+        return JsonResponse({"msg": 'This task has not yet been seen'}, status=204)

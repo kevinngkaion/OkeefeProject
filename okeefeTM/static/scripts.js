@@ -1,21 +1,3 @@
-// $.fn.dataTable.moment = function(format, locale){
-//     var types = $.fn.dataTable.ext.type;
- 
-//     // Add type detection
-//     types.detect.unshift(function(d){
-//         if (moment(d, format, locale, true).isValid())
-//             return 'moment-'+format;
-//         return null;
-//     } );
- 
-//     // Add sorting method - use an integer for the sorting
-//     types.order['moment-'+format+'-pre'] = function(d){
-//         return moment( d, format, locale, true ).unix();
-//     };
-// };
-
-
-
 $(document).ready(function () {
     console.log("DOCUMENT READY");
     // Set colours for task status
@@ -66,7 +48,7 @@ $(document).ready(function () {
     // These instatiate the DataTables. These need to be at the end so that the formatting can be done first before the table is output
     $('#tasksTable').DataTable({
         columnDefs:[
-            {type: 'date-string', targets: [5, 6]}
+            {type: 'date-string', targets: [5, 6]} // set the 5th and 6th column index to be a date-string type
         ]
     });
     $('#usersTable').DataTable();
@@ -143,16 +125,23 @@ function setPrioColor(tPrio){ //tPrio is a jQuery object
 
     // We will need to change the ID for these selectors because they are the same as the create_task form. We cannot have 2 elements with the same id
 function showTaskInfo(tID, tName, tStatus, tCat, tUser, tPrio, tCreated, tDue, tDesc, tRepeat, tNote){
-    console.log(typeof tUser);
+    let isSeen = $('#id_task_isSeen');
     $.ajax({
         url: 'mark_as_seen',
         type: 'get',
         data: {
             taskID: tID,
-            tUID: tUser
         },
-        success: (response) => {
-            console.log(response);
+        statusCode: {
+            200: (response) => {
+                isSeen.html(response['msg']);
+            },
+            201: (response) => {
+                isSeen.html(response['msg']);
+            },
+            204: (response) => {
+                console.log("\nThis task has not yet been seen\n");
+            }
         }
     });
     let note = $('#id_edit_note');
