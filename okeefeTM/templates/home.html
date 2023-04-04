@@ -2,19 +2,20 @@
 
 {% block content %}
 <!-- Task Dashboard Begins Here -->
-<div class="container container-lg mt-5">
+<div class="container container-lg mt-2 mb-5 bg-body">
     <!-- Alert if repeating task was created -->
     {% if numOfRepeat > 0 %}
         <div class="alert alert-warning" role="alert">
             {{numOfRepeat}} repeating tasks have been created
         </div>
     {% endif %}
+
     <!-- Welcome -->
     <div class="text-center">
         <h1>Welcome, {{user.first_name}}!</h1> <!-- INSERT USER's NAME HERE -->
     </div>
 
-    <div class="container bg-body mt-5 p-4 border shadow-sm px-4 rounded">
+    <div class="container bg-body mt-1 p-4 border shadow-sm px-4 rounded">
         <!-- TASK NAVIGATION BAR -->
         <div id="task-nav" class="d-flex justify-content-between mt-1 mb-4">
             {% if user.is_staff %}
@@ -49,8 +50,13 @@
                     <th scope="col">Category</th>
                     <th scope="col">Assigned To</th>
                     <th scope="col">Priority</th>
+                    {% if filter == "completed" %}
+                    <th scope="col">Due Date</th>
+                    <th scope="col">Date Completed</th>
+                    {% else %}
                     <th scope="col">Date Created</th>
                     <th scope="col">Due Date</th>
+                    {% endif %}
                     <th scope="col"></th>
                 </tr>
             </thead>
@@ -78,8 +84,13 @@
                         {% endif %}
                     </td>
                     <td><div class='task-prio'>{{ task.get_priority_display }}</div></td>
+                    {% if filter == 'completed' %}
+                    <td>{{ task.date_due }}</td>
+                    <td>{{ task.date_completed }}</td>
+                    {% else %}
                     <td>{{ task.date_created }}</td>
                     <td>{{ task.date_due }}</td>
+                    {% endif %}
                     <td class="text-center"><button class="btn btn-primary text-light" data-bs-toggle="modal" data-bs-target="#modalViewTask" onclick='showTaskInfo({{ task.id }},
                         "{{task.name}}",
                         {{task.status}},
