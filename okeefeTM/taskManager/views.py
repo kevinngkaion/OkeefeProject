@@ -120,22 +120,25 @@ def createRepeatingTasks():
 def edit_task(request):
     print("edit task")
     if request.method == "POST":
-        edittask = Task.objects.get(id=request.POST.get("id"))
-        edittask.note = request.POST.get("note")
-        edittask.desc = request.POST.get("desc")
-        edittask.user = User.objects.get(id=request.POST.get("user"))
-        edittask.priority = request.POST.get("priority")
+        task = Task.objects.get(id=request.POST.get("id"))
+        task.note = request.POST.get("note")
+        task.desc = request.POST.get("desc")
+        new_user = User.objects.get(id=request.POST.get("user"))
+        if (task.user != new_user):
+            task.user = new_user
+            task.isSeen = False
+        task.priority = request.POST.get("priority")
         if (request.POST.get("date_due") != ""):
-            edittask.date_due = request.POST.get("date_due")
-        edittask.repeat = request.POST.get("repeat")
-        edittask.category = Category.objects.get(id=request.POST.get("category"))
-        edittask.interval = request.POST.get("interval")
-        edittask.intervalLength = request.POST.get("intervalLength")
-        edittask.save()
-        print(request.POST)
+            task.date_due = request.POST.get("date_due")
+        task.repeat = request.POST.get("repeat")
+        task.category = Category.objects.get(id=request.POST.get("category"))
+        task.interval = request.POST.get("interval")
+        task.intervalLength = request.POST.get("intervalLength")
+        task.save()
+        print("Task was updated successfully")
         return redirect('home')
     else:
-        print("No good")
+        print("Task was not edited. There was an error")
         return redirect('home')
 
 
@@ -278,7 +281,7 @@ def mark_as_seen(request):
     task_user = task.user.first_name
     msg = "This task has been seen by " + task_user
     if task.isSeen:
-        print("Task has already been seen by " + task.user.first_name)
+        print("Task has already been seen by " + task_user)
         return JsonResponse({"msg": msg}, status=200)
     elif task.user == request.user:
         print("Its you")
@@ -288,6 +291,7 @@ def mark_as_seen(request):
     else:
         print("Not you at all")
         return JsonResponse({"msg": 'This task has not yet been seen'}, status=204)
+
 
 #forget password
 def ForgetPassword(request):

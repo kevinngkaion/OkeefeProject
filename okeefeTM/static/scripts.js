@@ -148,6 +148,7 @@ function showTaskInfo(tID, tName, tStatus, tCat, tUser, tPrio, tCreated, tDue, t
             },
             204: (response) => {
                 console.log("\nThis task has not yet been seen\n");
+                isSeen.html('');
             }
         }
     });
