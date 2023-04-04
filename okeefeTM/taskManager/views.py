@@ -21,6 +21,7 @@ def index(request):
 
 
 def home(request):
+    repeatsCreated = createRepeatingTasks()
     user = request.user        
     if not user.is_authenticated:   #redirect user to login if they are not authenticated
         return redirect('login')
@@ -41,6 +42,7 @@ def home(request):
         'editform': edittask,
         'tasks': tasks,
         'choices': status_choices,
+        'numOfRepeat': repeatsCreated,
     }
     return render(request, 'home.html', context)
 
@@ -76,6 +78,7 @@ def delete_task(request):
     
 
 def createRepeatingTasks():
+    repeatCount = 0
     repeatingTasks = Task.objects.filter(repeat=True).exclude(date_completed=None)
     for task in repeatingTasks:
         interval = task.interval
@@ -116,7 +119,8 @@ def createRepeatingTasks():
             # Set the old task repeats to false
             task.repeat = False
             task.save()
-    return
+            repeatCount += 1
+    return repeatCount
 
 
 def edit_task(request):

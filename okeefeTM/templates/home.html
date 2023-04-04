@@ -3,6 +3,12 @@
 {% block content %}
 <!-- Task Dashboard Begins Here -->
 <div class="container container-lg mt-5">
+    <!-- Alert if repeating task was created -->
+    {% if numOfRepeat > 0 %}
+        <div class="alert alert-warning" role="alert">
+            {{numOfRepeat}} repeating tasks have been created
+        </div>
+    {% endif %}
     <!-- Welcome -->
     <div class="text-center">
         <h1>Welcome, {{user.first_name}}!</h1> <!-- INSERT USER's NAME HERE -->
