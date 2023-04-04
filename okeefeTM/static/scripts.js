@@ -3,14 +3,21 @@ $(document).ready(function () {
     // Set colours for task status
     setStatsPrios();
 
-
     // on change for is this a recurring task for both create and edit
-    $('#formCreateTask').on('change', '#id_create_repeat', function() {
+    $('#formCreateTask').on('change', '#id_create_repeat', function () {
         toggleRepeatOptions($('#id_create_repeat'), 'create');
     })
-
-    $('#formEditTask').on('change', '#id_edit_repeat', function() {
+    $('#formEditTask').on('change', '#id_edit_repeat', function () {
         toggleRepeatOptions($('#id_edit_repeat'), 'edit');
+    })
+
+    // if the two passwords do not match, show the error message
+    $('#formCreateUser').on('keyup', '#id_create_password1, #id_create_password2', function () {
+        let password1 = $("#id_create_password1").val();
+        let password2 = $("#id_create_password2").val();
+        if (validatePassword(password1)){
+            checkPasswordMatch(password1, password2);
+        }
     })
 
     // onclick listener for deleting task
@@ -245,6 +252,22 @@ function confirmSetManager(event, username, url) {
     }
 }
 
+function validatePassword(password){
+    // Do something to check password validity
+    return true;
+}
+
+function checkPasswordMatch(password1, password2){
+    let saveButton = $("#id_create_user_save");
+    let errorMessage = $("#id_password_error");
+    if (password1 === password2){
+        errorMessage.addClass("d-none");
+        saveButton.removeAttr("disabled");
+    } else {
+        errorMessage.removeClass("d-none");
+        saveButton.attr("disabled", "disabled");
+    }
+}
 // THIS FUNCTION IS NOT BEING USED. It is for ajax version of task nav menu
 // function getTasks(filter){
 //     $.ajax({

@@ -23,11 +23,14 @@
                 <a href='home?filter=completed'><button class="btn btn-primary text-light text-uppercase" type="button">Completed Tasks</button></a>
                 {% endif %}
             </div>
+            <!-- if the user is not a staff, they cannot create tasks -->
+            {% if user.is_staff %}
             <div class="col-4 d-flex justify-content-end">
                 <!-- Create Task -->
                 <button class="btn btn-primary text-light text-uppercase" type="button" data-bs-toggle="modal"
                     data-bs-target="#modalCreateTask">Create Task</button>
             </div>
+            {% endif %}
         </div>
 
         <!-- TABLE PROPER -->

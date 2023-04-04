@@ -1,12 +1,12 @@
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate
 from django.forms import ModelForm, widgets, ValidationError
-from .models import Task
+from .models import Task, Department, UserDepartment
 from django import forms
 from django.contrib.auth.models import User
 
 
-class TaskForm(ModelForm):    
+class TaskForm(ModelForm):
     # This is for the styling of the form fields
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -16,11 +16,12 @@ class TaskForm(ModelForm):
             'category': {'class': 'form-select', 'id': 'id_create_category'},
             'priority': {'class': 'form-select', 'id': 'id_create_priority'},
             'date_due': {'class': 'form-control', 'id': 'id_create_due', 'type': 'date'},
-            'repeat': {'class': 'form-select', 'id': 'id_create_repeat',},
+            'repeat': {'class': 'form-select', 'id': 'id_create_repeat', },
             'desc': {'class': 'form-control', 'id': 'id_create_desc', 'rows': '5'},
             'interval': {'class': 'form-select', 'id': 'id_create_interval', 'disabled': True},
-            'intervalLength': {'class': 'form-control', 'id': 'id_create_intervalLength', 'disabled': True, 'placeholder': 'Frequency'},
-        }        
+            'intervalLength': {'class': 'form-control', 'id': 'id_create_intervalLength', 'disabled': True,
+                               'placeholder': 'Frequency'},
+        }
         self.fields['name'].widget.attrs.update(attrs['name'])
         self.fields['user'].widget.attrs.update(attrs['user'])
         self.fields['category'].widget.attrs.update(attrs['category'])
@@ -36,7 +37,6 @@ class TaskForm(ModelForm):
         user_choices = [(user.id, user.first_name or user.username) for user in users]
 
         self.fields['user'].choices = user_choices
-
 
     class Meta:
         model = Task
@@ -61,8 +61,10 @@ class TaskForm(ModelForm):
             'desc',
         ]
 
+
 class EditTaskForm(ModelForm):
     id = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'd-none', 'id': 'id_edit_id', 'hidden': True}))
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         attrs = {
@@ -78,10 +80,10 @@ class EditTaskForm(ModelForm):
                 'id': 'id_edit_intervalLength',
                 'disabled': True,
                 'placeholder': 'Frequency',
-                },
+            },
             'status': {'class': 'form-select', 'id': 'id_edit_status', 'disabled': True},
             'note': {'class': 'form-control', 'id': 'id_edit_note', 'rows': '2', 'readonly': True},
-        }        
+        }
 
         self.fields['user'].widget.attrs.update(attrs['user'])
         self.fields['category'].widget.attrs.update(attrs['category'])
@@ -108,7 +110,7 @@ class EditTaskForm(ModelForm):
             'date_due': 'Date Due',
             'repeat': 'Is this a recurring task?',
             'note': 'Notes'
-            }
+        }
         fields = [
             'id',
             'status',
@@ -121,19 +123,100 @@ class EditTaskForm(ModelForm):
             'interval',
             'desc',
             'note',
-            ]
+        ]
 
-            
+
 class CreateUserForm(UserCreationForm):
+    department = forms.ModelChoiceField(queryset=Department.objects.all(), empty_label='Select Department')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        attrs = {
+            'username': {'class': 'form-control', 'id': 'id_create_username', },
+            'first_name': {'class': 'form-control', 'id': 'id_create_first_name', },
+            'last_name': {'class': 'form-control', 'id': 'id_create_last_name', },
+            'email': {'class': 'form-control', 'id': 'id_create_email', },
+            'department': {'class': 'form-select', 'id': 'id_create_department', },
+            'password1': {'class': 'form-control', 'id': 'id_create_password1', },
+            'password2': {'class': 'form-control', 'id': 'id_create_password2', },
+        }
+
+        self.fields['username'].widget.attrs.update(attrs['username'])
+        self.fields['first_name'].widget.attrs.update(attrs['first_name'])
+        self.fields['last_name'].widget.attrs.update(attrs['last_name'])
+        self.fields['email'].widget.attrs.update(attrs['email'])
+        self.fields['department'].widget.attrs.update(attrs['department'])
+        self.fields['password1'].widget.attrs.update(attrs['password1'])
+        self.fields['password2'].widget.attrs.update(attrs['password2'])
+
     class Meta(UserCreationForm.Meta):
-        fields = UserCreationForm.Meta.fields + ('email', 'first_name', 'last_name')
+        fields = UserCreationForm.Meta.fields + ('email', 'first_name', 'last_name', 'department')
+
+
+# A user creation form that includes the fields of the built-in UserCreationForm, also including department in the
+# Department table. Enter password twice to ensure it is entered correctly.
+class MyCreateUserForm(forms.ModelForm):
+    department = forms.ModelChoiceField(queryset=Department.objects.all(), empty_label='Select Department')
+    password1 = forms.CharField(widget=forms.PasswordInput(), label='Password, 8 characters minimum')
+    password2 = forms.CharField(widget=forms.PasswordInput(), label='Confirm Password')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        attrs = {
+            'username': {'class': 'form-control', 'id': 'id_create_username', },
+            'first_name': {'class': 'form-control', 'id': 'id_create_first_name', },
+            'last_name': {'class': 'form-control', 'id': 'id_create_last_name', },
+            'email': {'class': 'form-control', 'id': 'id_create_email', },
+            'department': {'class': 'form-select', 'id': 'id_create_department', },
+            'password1': {'class': 'form-control', 'id': 'id_create_password1', },
+            'password2': {'class': 'form-control', 'id': 'id_create_password2', },
+        }
+
+        self.fields['username'].widget.attrs.update(attrs['username'])
+        self.fields['first_name'].widget.attrs.update(attrs['first_name'])
+        self.fields['last_name'].widget.attrs.update(attrs['last_name'])
+        self.fields['email'].widget.attrs.update(attrs['email'])
+        self.fields['department'].widget.attrs.update(attrs['department'])
+        self.fields['password1'].widget.attrs.update(attrs['password1'])
+        self.fields['password2'].widget.attrs.update(attrs['password2'])
+
+    class Meta:
+        model = User
+        labels = {'username': 'Username',
+                  'first_name': 'First Name',
+                  'last_name': 'Last Name',
+                  'email': 'Email',
+                  'department': 'Department',
+                  'password1': 'Password',
+                  'password2': 'Confirm Password',
+                  }
+
+        fields = ['username', 'first_name', 'last_name', 'email', 'department', 'password1', 'password2']
+
+    def clean_password2(self):
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Passwords don't match")
+            self.add_error('password2', "Passwords don't match")
+        return password2
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.department = self.cleaned_data['department']
+        if commit:
+            user.save()
+        return user
 
 
 class EditUserForm(ModelForm):
+    department = forms.ModelChoiceField(queryset=Department.objects.all(), empty_label='Select Department')
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.fields['username'].widget = widgets.TextInput(attrs={'class': 'form-control', 'disabled': True})
+        self.fields['department'].widget = widgets.TextInput(attrs={'class': 'form-control', 'disabled': True})
         self.fields['first_name'].widget = widgets.TextInput(attrs={'class': 'form-control', 'disabled': True})
         self.fields['last_name'].widget = widgets.TextInput(attrs={'class': 'form-control', 'disabled': True})
         self.fields['email'].widget = widgets.EmailInput(attrs={'class': 'form-control', 'disabled': True})
@@ -145,9 +228,11 @@ class EditUserForm(ModelForm):
             'first_name': 'First Name',
             'last_name': 'Last Name',
             'email': 'Email',
+            'department': 'Department',
         }
         fields = [
             'username',
+            'department',
             'first_name',
             'last_name',
             'email',

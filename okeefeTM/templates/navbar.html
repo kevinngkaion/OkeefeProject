@@ -28,6 +28,9 @@
                             <a class="button-5" href="{% url 'user_info' user.username %}"><i
                                     class="fas fa-heart pe-2"></i>Manage Account</a>
                         </li>
+                        <li class="nav-item ms-3">
+                            <a class="button-5" href="{% url 'home' %}"><i class="fas fa-home pe-2"></i>Task Home</a>
+                        </li>
                     {% else %}
                         <li class="nav-item ms-3">
                             <a class="button-5" href="{% url 'home' %}"><i class="fas fa-home pe-2"></i>Task Home</a>
