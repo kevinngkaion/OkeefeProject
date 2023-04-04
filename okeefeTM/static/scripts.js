@@ -1,14 +1,8 @@
 $(document).ready(function () {
+    console.log("DOCUMENT READY");
     // Set colours for task status
-    let tStats = $("#tasksTable .task-status");
-    for (let i = 0; i < tStats.length; i++){
-        setStatusColor($(tStats[i]));
-    }
+    setStatsPrios();
 
-    let tPrios = $('#tasksTable .task-prio');
-    for (let i = 0; i < tPrios.length; i++){
-        setPrioColor($(tPrios[i]));
-    }
 
     // on change for is this a recurring task for both create and edit
     $('#formCreateTask').on('change', '#id_create_repeat', function() {
@@ -19,9 +13,61 @@ $(document).ready(function () {
         toggleRepeatOptions($('#id_edit_repeat'), 'edit');
     })
 
-    $('#tasksTable').DataTable(); //This needs to be at the end so that the formatting can be done first before the table is output
-    $('#usersTable').DataTable(); //This needs to be at the end so that the formatting can be done first before the table is output
+    // onclick listener for deleting task
+    $('#id_delete_task_button').on('click', function(event){
+        event.preventDefault(); // prevent the default behaviour of this element from executing
+        let confirmed = confirm("Are you sure you want to delete this task?");
+        if (confirmed){
+            window.location.href = $(this).attr('href');
+        }
+    });
+
+    // Custom sorting function to sort the dates
+    $.fn.dataTable.ext.type.order['date-string-pre'] = function(date) {
+        var parts = date.split(' ');
+        var month = parts[0].substring(0, 3);
+        var day = parts[1].replace(',', '');
+        var year = parts[2];
+        var monthIndex = {
+          'Jan': 0,
+          'Feb': 1,
+          'Mar': 2,
+          'Apr': 3,
+          'May': 4,
+          'Jun': 5,
+          'Jul': 6,
+          'Aug': 7,
+          'Sep': 8,
+          'Oct': 9,
+          'Nov': 10,
+          'Dec': 11
+        }[month];
+        return new Date(year, monthIndex, day).getTime();
+      };
+
+    // These instatiate the DataTables. These need to be at the end so that the formatting can be done first before the table is output
+    $('#tasksTable').DataTable({
+        columnDefs:[
+            {type: 'date-string', targets: [5, 6]} // set the 5th and 6th column index to be a date-string type
+        ]
+    });
+    $('#usersTable').DataTable();
 });
+
+
+function setStatsPrios(){
+    // Set colours for task status
+    let tStats = $("#tasksTable .task-status");
+    for (let i = 0; i < tStats.length; i++){
+        setStatusColor($(tStats[i]));
+    }
+
+    let tPrios = $('#tasksTable .task-prio');
+    for (let i = 0; i < tPrios.length; i++){
+        setPrioColor($(tPrios[i]));
+    }
+}
+
 
 function toggleRepeatOptions(repeatObj, actionType){
     intervalLength = $('#id_' + actionType + '_intervalLength');
@@ -79,15 +125,23 @@ function setPrioColor(tPrio){ //tPrio is a jQuery object
 
     // We will need to change the ID for these selectors because they are the same as the create_task form. We cannot have 2 elements with the same id
 function showTaskInfo(tID, tName, tStatus, tCat, tUser, tPrio, tCreated, tDue, tDesc, tRepeat, tNote){
+    let isSeen = $('#id_task_isSeen');
     $.ajax({
         url: 'mark_as_seen',
         type: 'get',
         data: {
             taskID: tID,
-            tUID: tUser
         },
-        success: (response) => {
-            console.log(response);
+        statusCode: {
+            200: (response) => {
+                isSeen.html(response['msg']);
+            },
+            201: (response) => {
+                isSeen.html(response['msg']);
+            },
+            204: (response) => {
+                console.log("\nThis task has not yet been seen\n");
+            }
         }
     });
     let note = $('#id_edit_note');
@@ -100,9 +154,10 @@ function showTaskInfo(tID, tName, tStatus, tCat, tUser, tPrio, tCreated, tDue, t
     let category = $('#id_edit_category')
     let prio = $('#id_edit_priority');
     let due = $('#id_edit_due');
-    let repeat = $('#id_edit_repeat')
+    let repeat = $('#id_edit_repeat');
     let date = new Date(tDue);
     let dueDate = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+    let deleteBtn = $('#id_delete_task_button');
     note.val(tNote);
     id.val(tID);
     status.val(tStatus);
@@ -114,6 +169,7 @@ function showTaskInfo(tID, tName, tStatus, tCat, tUser, tPrio, tCreated, tDue, t
     prio.val(tPrio);
     due.val(dueDate);
     repeat.val(tRepeat);
+    deleteBtn.attr('href', 'delete_task?id=' + tID);
 }
 
 function toggleEdit(){
@@ -139,7 +195,7 @@ function changeStatus(taskID, newStatusID, newStatusName){
             newStatusID: newStatusID
         },
         success: (response) => {
-            let taskStatus = $("#task" + taskId + " .task-status");
+            let taskStatus = $("#task" + taskID + " .task-status");
             taskStatus.text(newStatusName + " ");
             setStatusColor(taskStatus);
             console.log(response);
@@ -147,6 +203,7 @@ function changeStatus(taskID, newStatusID, newStatusName){
     });
 }
 
+// toggle being able to see password
 var togglePassword = document.querySelector('#togglePassword');
 var password = document.querySelector('#id_password');
 togglePassword.addEventListener('click', function (e) {
@@ -187,3 +244,21 @@ function confirmSetManager(event, username, url) {
         alert("Set manager cancelled.");
     }
 }
+
+// THIS FUNCTION IS NOT BEING USED. It is for ajax version of task nav menu
+// function getTasks(filter){
+//     $.ajax({
+//         url: 'get_tasks',
+//         type: 'get',
+//         data: {
+//             filter: filter
+//         },
+//         success: (response) => {
+//             taskTable.clear();
+//             $('#taskTable').html(response);
+//             setStatsPrios();
+//             taskTable.add(['Test Task', 'Complete', 'Programming', 'kevin', 'low', 'March 31, 2023', 'March 31, 2023', '']);
+//             taskTable.draw();
+//         }
+//     });
+// }

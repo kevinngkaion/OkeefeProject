@@ -31,6 +31,12 @@ class TaskForm(ModelForm):
         self.fields['interval'].widget.attrs.update(attrs['interval'])
         self.fields['intervalLength'].widget.attrs.update(attrs['intervalLength'])
 
+        # Update user field choices to display first names
+        users = User.objects.all()
+        user_choices = [(user.id, user.first_name or user.username) for user in users]
+
+        self.fields['user'].choices = user_choices
+
 
     class Meta:
         model = Task
@@ -87,6 +93,11 @@ class EditTaskForm(ModelForm):
         self.fields['intervalLength'].widget.attrs.update(attrs['intervalLength'])
         self.fields['status'].widget.attrs.update(attrs['status'])
         self.fields['note'].widget = widgets.Textarea(attrs=attrs['note'])
+
+        # Update user field choices to display first names
+        users = User.objects.all()
+        user_choices = [(user.id, user.first_name or user.username) for user in users]
+        self.fields['user'].choices = user_choices
 
     class Meta:
         model = Task

@@ -20,6 +20,8 @@ urlpatterns = [
   path('mark_as_seen', views.mark_as_seen, name='mark_as_seen'),
   path('user_info/<str:username>/', views.getUserInfo, name='user_info'),
   path('resetPassword/<str:username>/', views.reset_password, name='resetPassword'),
+  path('delete_task', views.delete_task, name='delete_task'),
+  #path('get_tasks', views.get_tasks, name='get_tasks'),    This one is commented because we are not using it
   ]
 
 
