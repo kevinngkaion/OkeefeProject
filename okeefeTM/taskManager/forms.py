@@ -135,22 +135,22 @@ class CreateUserForm(UserCreationForm):
             'username': {'class': 'form-control', 'id': 'id_create_username', },
             'first_name': {'class': 'form-control', 'id': 'id_create_first_name', },
             'last_name': {'class': 'form-control', 'id': 'id_create_last_name', },
-            'email': {'class': 'form-control', 'id': 'id_create_email', },
             'department': {'class': 'form-select', 'id': 'id_create_department', },
             'password1': {'class': 'form-control', 'id': 'id_create_password1', },
             'password2': {'class': 'form-control', 'id': 'id_create_password2', },
         }
-
-        self.fields['username'].widget.attrs.update(attrs['username'])
+        # make the label of username field email
+        self.fields['username'].label = 'Email'
+        # self.fields['username'].widget.attrs.update(attrs['username'])
+        self.fields['username'].widget = forms.EmailInput(attrs=attrs['username'])
         self.fields['first_name'].widget.attrs.update(attrs['first_name'])
         self.fields['last_name'].widget.attrs.update(attrs['last_name'])
-        self.fields['email'].widget.attrs.update(attrs['email'])
         self.fields['department'].widget.attrs.update(attrs['department'])
         self.fields['password1'].widget.attrs.update(attrs['password1'])
         self.fields['password2'].widget.attrs.update(attrs['password2'])
 
     class Meta(UserCreationForm.Meta):
-        fields = UserCreationForm.Meta.fields + ('email', 'first_name', 'last_name', 'department')
+        fields = UserCreationForm.Meta.fields + ('first_name', 'last_name', 'department')
 
 
 # A user creation form that includes the fields of the built-in UserCreationForm, also including department in the
@@ -219,15 +219,15 @@ class EditUserForm(ModelForm):
         self.fields['department'].widget = widgets.TextInput(attrs={'class': 'form-control', 'disabled': True})
         self.fields['first_name'].widget = widgets.TextInput(attrs={'class': 'form-control', 'disabled': True})
         self.fields['last_name'].widget = widgets.TextInput(attrs={'class': 'form-control', 'disabled': True})
-        self.fields['email'].widget = widgets.EmailInput(attrs={'class': 'form-control', 'disabled': True})
+        # self.fields['email'].widget = widgets.EmailInput(attrs={'class': 'form-control', 'disabled': True})
 
     class Meta:
         model = User
         labels = {
-            'username': 'Username',
+            'username': 'Email',
             'first_name': 'First Name',
             'last_name': 'Last Name',
-            'email': 'Email',
+            # 'email': 'Email',
             'department': 'Department',
         }
         fields = [
@@ -235,7 +235,7 @@ class EditUserForm(ModelForm):
             'department',
             'first_name',
             'last_name',
-            'email',
+            # 'email',
         ]
 
 
@@ -270,7 +270,7 @@ class LoginForm(AuthenticationForm):
 class MyUserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email']
+        fields = ['first_name', 'last_name']
 
 
 class MyResetPasswordForm(forms.ModelForm):
