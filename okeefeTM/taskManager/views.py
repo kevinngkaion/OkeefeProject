@@ -140,9 +140,15 @@ def edit_task(request):
         if (request.POST.get("date_due") != ""):
             task.date_due = request.POST.get("date_due")
         task.repeat = request.POST.get("repeat")
+        print(task.repeat)
+        if task.repeat is "False":
+            task.interval = request.POST.get("interval")
+            task.intervalLength = request.POST.get("intervalLength")
+        else:
+            task.interval = ''
+            task.intervalLength = None
+        
         task.category = Category.objects.get(id=request.POST.get("category"))
-        task.interval = request.POST.get("interval")
-        task.intervalLength = request.POST.get("intervalLength")
         task.save()
         print("Task was updated successfully")
         return redirect('home')
