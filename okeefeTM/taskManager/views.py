@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.urls import reverse
-
+from django.conf import settings
 from .forms import *
 from .models import *
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -10,7 +10,7 @@ from django.contrib import messages, auth
 from django.utils import timezone
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
-
+from django.core.mail import send_mail
 
 # Create your views here.
 
@@ -70,6 +70,10 @@ def create_task(request):
         form = TaskForm(request.POST)
         if form.is_valid():
             form.save()
+            send_mail("A Task has been assigned to you",
+                      "Details of task",
+                      settings.EMAIL_HOST_USER,
+                      ['tuscun54@gmail.com'])
     return redirect('home')
 
 
@@ -135,6 +139,10 @@ def edit_task(request):
         new_user = User.objects.get(id=request.POST.get("user"))
         if (task.user != new_user):
             task.user = new_user
+            send_mail("A Task has been reassigned to you",
+                      "Details of task",
+                      settings.EMAIL_HOST_USER,
+                      ['tuscun54@gmail.com'])
             task.isSeen = False
         task.priority = request.POST.get("priority")
         if (request.POST.get("date_due") != ""):
@@ -143,6 +151,16 @@ def edit_task(request):
         task.category = Category.objects.get(id=request.POST.get("category"))
         task.interval = request.POST.get("interval")
         task.intervalLength = request.POST.get("intervalLength")
+        new_status = request.POST.get('status')
+        if (task.status != new_status):
+            if (new_status == 3):
+                send_mail(
+                    "A task has been complete",
+                    "Details of completed task",
+                    settings.EMAIL_HOST_USER,
+                    ['']
+                )
+            task.status = new_status
         task.save()
         print("Task was updated successfully")
         return redirect('home')
@@ -170,6 +188,10 @@ def register(request):
             userDepartment.department = Department.objects.get(id=request.POST.get("department"))
             userDepartment.save()
             print(user.username)
+            send_mail('Your Account Has Been Created',
+                      "Your account for the O'Keefe Task Manager has been created",
+                      settings.EMAIL_HOST_USER,
+                      [user.email])
             return redirect(reverse('getAllUsers') + '?status=created&user=' + user.username)
         else:
             print("CREATE USER FORM IS INVALID")
