@@ -69,11 +69,14 @@ def create_task(request):
     if request.method == "POST":
         form = TaskForm(request.POST)
         if form.is_valid():
+            user = User.objects.get(id=request.POST.get("user"))
             form.save()
             send_mail("A Task has been assigned to you",
-                      "Details of task",
+                      "Task Name: " + request.POST.get("name") + "\n" +
+                      "Description: " + request.POST.get("desc") + "\n" +
+                      "For more details please visit http://www.okeefetm.ca/",
                       settings.EMAIL_HOST_USER,
-                      ['tuscun54@gmail.com'])
+                      [user.username])
     return redirect('home')
 
 
@@ -140,9 +143,11 @@ def edit_task(request):
         if (task.user != new_user):
             task.user = new_user
             send_mail("A Task has been reassigned to you",
-                      "Details of task",
+                      "Task Name: " + task.name + "\n" +
+                      "Description: " + task.desc + "\n" +
+                      "For more details please visit http://www.okeefetm.ca/",
                       settings.EMAIL_HOST_USER,
-                      ['tuscun54@gmail.com'])
+                      [task.user.username])
             task.isSeen = False
         task.priority = request.POST.get("priority")
         if (request.POST.get("date_due") != ""):
@@ -155,10 +160,12 @@ def edit_task(request):
         if (task.status != new_status):
             if (new_status == 3):
                 send_mail(
-                    "A task has been complete",
-                    "Details of completed task",
+                    "A task has been completed",
+                    "Task Name: " + task.name + "\n" +
+                    "Description: " + task.desc + "\n" +
+                    "For more details please visit http://www.okeefetm.ca/",
                     settings.EMAIL_HOST_USER,
-                    ['']
+                    ['arresteddevelopers2023@gmail.com']
                 )
             task.status = new_status
         task.save()
