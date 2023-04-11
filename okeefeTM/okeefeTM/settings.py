@@ -13,6 +13,10 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 import pytz
+import json
+
+with open ('/etc/config.json') as config_file:
+    config = json.load(config_file)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,19 +25,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ykk3j8^g34i&!5vo!-uq^8-)r%ta=jzl^roa7xle91f5_@qgz9'
+SECRET_KEY = config["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'noreply.okeefetaskmanager@gmail.com'
-EMAIL_HOST_PASSWORD = 'ixsmrghvhxgbrbni'
-# okeeFe2023?
-ALLOWED_HOSTS = ['*']
+EMAIL_HOST_USER = config["EMAIL_ADDRESS"]
+EMAIL_HOST_PASSWORD = config["EMAIL_PASSWORD"]
+
+ALLOWED_HOSTS = ['www.okeefetm.ca', '35.230.45.253']
+
 
 # Application definition
 
