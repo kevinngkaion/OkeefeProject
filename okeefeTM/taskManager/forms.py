@@ -1,10 +1,18 @@
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, password_validation
 from django.forms import ModelForm, widgets, ValidationError
-from .models import Task, Department, UserDepartment
+from .models import Task, Department, UserDepartment, PasswordResetToken
 from django import forms
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 
+from django.template.loader import render_to_string
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib import messages
 
 class TaskForm(ModelForm):
     # This is for the styling of the form fields
@@ -135,22 +143,22 @@ class CreateUserForm(UserCreationForm):
             'username': {'class': 'form-control', 'id': 'id_create_username', },
             'first_name': {'class': 'form-control', 'id': 'id_create_first_name', },
             'last_name': {'class': 'form-control', 'id': 'id_create_last_name', },
-            'email': {'class': 'form-control', 'id': 'id_create_email', },
             'department': {'class': 'form-select', 'id': 'id_create_department', },
             'password1': {'class': 'form-control', 'id': 'id_create_password1', },
             'password2': {'class': 'form-control', 'id': 'id_create_password2', },
         }
-
-        self.fields['username'].widget.attrs.update(attrs['username'])
+        # make the label of username field email
+        self.fields['username'].label = 'Email'
+        # self.fields['username'].widget.attrs.update(attrs['username'])
+        self.fields['username'].widget = forms.EmailInput(attrs=attrs['username'])
         self.fields['first_name'].widget.attrs.update(attrs['first_name'])
         self.fields['last_name'].widget.attrs.update(attrs['last_name'])
-        self.fields['email'].widget.attrs.update(attrs['email'])
         self.fields['department'].widget.attrs.update(attrs['department'])
         self.fields['password1'].widget.attrs.update(attrs['password1'])
         self.fields['password2'].widget.attrs.update(attrs['password2'])
 
     class Meta(UserCreationForm.Meta):
-        fields = UserCreationForm.Meta.fields + ('email', 'first_name', 'last_name', 'department')
+        fields = UserCreationForm.Meta.fields + ('first_name', 'last_name', 'department')
 
 
 # A user creation form that includes the fields of the built-in UserCreationForm, also including department in the
@@ -219,15 +227,15 @@ class EditUserForm(ModelForm):
         self.fields['department'].widget = widgets.TextInput(attrs={'class': 'form-control', 'disabled': True})
         self.fields['first_name'].widget = widgets.TextInput(attrs={'class': 'form-control', 'disabled': True})
         self.fields['last_name'].widget = widgets.TextInput(attrs={'class': 'form-control', 'disabled': True})
-        self.fields['email'].widget = widgets.EmailInput(attrs={'class': 'form-control', 'disabled': True})
+        # self.fields['email'].widget = widgets.EmailInput(attrs={'class': 'form-control', 'disabled': True})
 
     class Meta:
         model = User
         labels = {
-            'username': 'Username',
+            'username': 'Email',
             'first_name': 'First Name',
             'last_name': 'Last Name',
-            'email': 'Email',
+            # 'email': 'Email',
             'department': 'Department',
         }
         fields = [
@@ -235,7 +243,7 @@ class EditUserForm(ModelForm):
             'department',
             'first_name',
             'last_name',
-            'email',
+            # 'email',
         ]
 
 
@@ -270,7 +278,7 @@ class LoginForm(AuthenticationForm):
 class MyUserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email']
+        fields = ['first_name', 'last_name']
 
 
 class MyResetPasswordForm(forms.ModelForm):
@@ -288,3 +296,4 @@ class MyResetPasswordForm(forms.ModelForm):
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError("The two passwords do not match")
         return cleaned_data
+

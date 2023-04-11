@@ -1,15 +1,19 @@
+
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model, authenticate, login, logout
-from django.urls import reverse
-
+from django.urls import reverse, reverse_lazy
+from django.conf import settings
 from .forms import *
 from .models import *
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import JsonResponse
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.models import User
-from django.contrib import messages, auth
+from django.contrib import messages
 from django.utils import timezone
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.core.mail import send_mail
 
 
 # Create your views here.
@@ -69,7 +73,14 @@ def create_task(request):
     if request.method == "POST":
         form = TaskForm(request.POST)
         if form.is_valid():
+            user = User.objects.get(id=request.POST.get("user"))
             form.save()
+            send_mail("A Task has been assigned to you",
+                      "Task Name: " + request.POST.get("name") + "\n" +
+                      "Description: " + request.POST.get("desc") + "\n" +
+                      "For more details please visit http://www.okeefetm.ca/",
+                      settings.EMAIL_HOST_USER,
+                      [user.username])
     return redirect('home')
 
 
@@ -135,6 +146,12 @@ def edit_task(request):
         new_user = User.objects.get(id=request.POST.get("user"))
         if (task.user != new_user):
             task.user = new_user
+            send_mail("A Task has been reassigned to you",
+                      "Task Name: " + task.name + "\n" +
+                      "Description: " + task.desc + "\n" +
+                      "For more details please visit http://www.okeefetm.ca/",
+                      settings.EMAIL_HOST_USER,
+                      [task.user.username])
             task.isSeen = False
         task.priority = request.POST.get("priority")
         if (request.POST.get("date_due") != ""):
@@ -149,6 +166,20 @@ def edit_task(request):
             task.intervalLength = None
         
         task.category = Category.objects.get(id=request.POST.get("category"))
+
+        # Send email if new status is "Complete"
+        new_status = request.POST.get('status')
+        if (task.status != new_status):
+            if (new_status == 3):
+                send_mail(
+                    "A task has been completed",
+                    "Task Name: " + task.name + "\n" +
+                    "Description: " + task.desc + "\n" +
+                    "For more details please visit http://www.okeefetm.ca/",
+                    settings.EMAIL_HOST_USER,
+                    ['arresteddevelopers2023@gmail.com']
+                )
+            task.status = new_status
         task.save()
         print("Task was updated successfully")
         return redirect('home')
@@ -176,6 +207,10 @@ def register(request):
             userDepartment.department = Department.objects.get(id=request.POST.get("department"))
             userDepartment.save()
             print(user.username)
+            send_mail('Your Account Has Been Created',
+                      "Your account for the O'Keefe Task Manager has been created",
+                      settings.EMAIL_HOST_USER,
+                      [user.email])
             return redirect(reverse('getAllUsers') + '?status=created&user=' + user.username)
         else:
             print("CREATE USER FORM IS INVALID")
@@ -305,8 +340,16 @@ def user_logout(request):
 def update_task_status(request):
     task = Task.objects.get(id=request.GET.get("taskID"))
     task.status = request.GET.get("newStatusID")
-    if task.date_completed is None and task.status is '3':
+    if task.date_completed is None and task.status == '3':
         task.date_completed = date.today()
+        send_mail(
+            "A task has been completed",
+            "Task Name: " + task.name + "\n" +
+            "Description: " + task.desc + "\n" +
+            "For more details please visit http://www.okeefetm.ca/",
+            settings.EMAIL_HOST_USER,
+            ['arresteddevelopers2023@gmail.com']
+        )
     task.save()
     return JsonResponse({'msg': 'Status of this task has been updated'}, status=200)  # Status 200 if successfull.
 
@@ -329,25 +372,63 @@ def mark_as_seen(request):
         return JsonResponse({"msg": 'This task has not yet been seen'}, status=204)
 
 
-#forget password
-def ForgetPassword(request):
+# forget password
+User = get_user_model()
+
+
+def forgetpassword(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            # User does not exist, show error message
+            return render(request, 'forget_password.html', {'error': 'User does not exist'})
+
+        if user.is_staff:
+            # User is staff, send reset password email
+            uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+            token = PasswordResetTokenGenerator().make_token(user)
+            reset_link = request.build_absolute_uri(reverse('change_password', kwargs={'uidb64': uidb64, 'token': token}))
+
+            send_mail(
+                'Reset your password',
+                f'Click the following link to reset your password: {reset_link}',
+                'noreply@gmail.com',
+                [user.email],
+                fail_silently=False,
+            )
+
+            # Show success message
+            return render(request, 'forget_password.html', {'success': 'Password reset link has been sent to your email.'})
+        else:
+            # User is not staff, show error message
+            return render(request, 'forget_password.html', {'error': 'Please contact your manager to reset the password.'})
+    else:
+        return render(request, 'forget_password.html')
+
+def change_password(request, uidb64, token):
     try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and PasswordResetTokenGenerator().check_token(user, token):
         if request.method == 'POST':
-            username = request.POST.get('username')
-
-            if not User.objects.filter(username=username).first():
-                messages.success(request,'No user found with this username')
-                return redirect('forget_password.html')
-
-            user_obj =User.objects.get(username=username)
-            token = str(uuid.uuid4())
-            profile_obj = Profile.objects.get(user = user_obj)
-            profile_obj.forget_password_token = token
-            profile.obj.save()
-            send_forget_password_mail(user_obj.email, token)
-            messages.success(request, 'An email is sent.')
-            return redirect('forget_password.html')
-
-    except Exception as e:
-        print(e)
-    return render(request, 'forget_password.html')
+            password1 = request.POST['password1']
+            password2 = request.POST['password2']
+            if password1 != password2:
+                return render(request, 'change_password.html', {'error': 'Passwords do not match'})
+            elif len(password1) < 8:
+                return render(request, 'change_password.html', {'error': 'Password must be at least 8 characters long'})
+            else:
+                user.set_password(password1)
+                user.save()
+                return render(request, 'change_password.html', {'success': 'Password reset successful.'})
+            return redirect(reverse_lazy('login'))
+        return render(request, 'change_password.html', {'user': user})
+    else:
+        messages.error(request, 'Invalid password reset link')
+        return redirect(reverse_lazy('login'))
