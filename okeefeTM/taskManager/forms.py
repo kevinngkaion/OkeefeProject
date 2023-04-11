@@ -1,10 +1,18 @@
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, password_validation
 from django.forms import ModelForm, widgets, ValidationError
-from .models import Task, Department, UserDepartment
+from .models import Task, Department, UserDepartment, PasswordResetToken
 from django import forms
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 
+from django.template.loader import render_to_string
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib import messages
 
 class TaskForm(ModelForm):
     # This is for the styling of the form fields
@@ -288,3 +296,4 @@ class MyResetPasswordForm(forms.ModelForm):
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError("The two passwords do not match")
         return cleaned_data
+
