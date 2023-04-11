@@ -103,7 +103,9 @@
                         "{{task.repeat}}",
                         "{{task.note}}",
                         "{{task.interval}}",
-                        "{{task.intervalLength}}")'>View Task</button></td>
+                        "{{task.intervalLength}}",
+                        {{user.id}},
+                        "{{user.is_staff}}")'>View Task</button></td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -176,7 +178,7 @@
                 <div class="modal-footer">
                 {% endif %}
                     <div>
-                        <button type="button" class="btn btn-secondary btn-lg" onclick="toggleEdit()">Edit</button>
+                        <button id="id_edit_task_btn" type="button" class="btn btn-secondary btn-lg" onclick="toggleEdit()">Edit</button>
                         <button id="save_edit" disabled type="submit" class="btn btn-primary btn-lg text-light" value="">Save</button>
                     </div>
                 </div>

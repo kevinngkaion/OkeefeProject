@@ -75,12 +75,17 @@ def create_task(request):
         if form.is_valid():
             user = User.objects.get(id=request.POST.get("user"))
             form.save()
-            send_mail("A Task has been assigned to you",
-                      "Task Name: " + request.POST.get("name") + "\n" +
-                      "Description: " + request.POST.get("desc") + "\n" +
-                      "For more details please visit http://www.okeefetm.ca/",
-                      settings.EMAIL_HOST_USER,
-                      [user.username])
+            #should only send task creation mail if user assigned is Unassigned(admin)
+            if user is not User.objects.get(username="admin"):
+                try:
+                    send_mail("A Task has been assigned to you",
+                        "Task Name: " + request.POST.get("name") + "\n" +
+                        "Description: " + request.POST.get("desc") + "\n" +
+                        "For more details please visit http://www.okeefetm.ca/",
+                        settings.EMAIL_HOST_USER,
+                        [user.username])
+                except:
+                    print("There was an error sending mail for creating a task")
     return redirect('home')
 
 
@@ -146,12 +151,17 @@ def edit_task(request):
         new_user = User.objects.get(id=request.POST.get("user"))
         if (task.user != new_user):
             task.user = new_user
-            send_mail("A Task has been reassigned to you",
-                      "Task Name: " + task.name + "\n" +
-                      "Description: " + task.desc + "\n" +
-                      "For more details please visit http://www.okeefetm.ca/",
-                      settings.EMAIL_HOST_USER,
-                      [task.user.username])
+            # Only send mail if new_user is not Unassigned (admin)
+            if new_user is not User.objects.get(username="admin"):
+                try:
+                    send_mail("A Task has been reassigned to you",
+                            "Task Name: " + task.name + "\n" +
+                            "Description: " + task.desc + "\n" +
+                            "For more details please visit http://www.okeefetm.ca/",
+                            settings.EMAIL_HOST_USER,
+                            [task.user.username])
+                except:
+                    print("There was an error sending an email for reassigning a task user")
             task.isSeen = False
         task.priority = request.POST.get("priority")
         if (request.POST.get("date_due") != ""):
@@ -169,8 +179,8 @@ def edit_task(request):
 
         # Send email if new status is "Complete"
         new_status = request.POST.get('status')
-        if (task.status != new_status):
-            if (new_status == 3):
+        if (task.status != new_status and new_status == 3):
+            try:
                 send_mail(
                     "A task has been completed",
                     "Task Name: " + task.name + "\n" +
@@ -179,6 +189,8 @@ def edit_task(request):
                     settings.EMAIL_HOST_USER,
                     ['arresteddevelopers2023@gmail.com']
                 )
+            except:
+                print("There was an error sending an email for the completion of a task in editing task")
             task.status = new_status
         task.save()
         print("Task was updated successfully")
@@ -207,10 +219,13 @@ def register(request):
             userDepartment.department = Department.objects.get(id=request.POST.get("department"))
             userDepartment.save()
             print(user.username)
-            send_mail('Your Account Has Been Created',
-                      "Your account for the O'Keefe Task Manager has been created",
-                      settings.EMAIL_HOST_USER,
-                      [user.email])
+            try:
+                send_mail('Your Account Has Been Created',
+                        "Your account for the O'Keefe Task Manager has been created",
+                        settings.EMAIL_HOST_USER,
+                        [user.email])
+            except:
+                print("There was an error sending an email for creating a user")
             return redirect(reverse('getAllUsers') + '?status=created&user=' + user.username)
         else:
             print("CREATE USER FORM IS INVALID")
@@ -342,15 +357,19 @@ def update_task_status(request):
     task.status = request.GET.get("newStatusID")
     if task.date_completed is None and task.status == '3':
         task.date_completed = date.today()
-        send_mail(
+        try:
+            send_mail(
             "A task has been completed",
             "Task Name: " + task.name + "\n" +
             "Description: " + task.desc + "\n" +
             "For more details please visit http://www.okeefetm.ca/",
             settings.EMAIL_HOST_USER,
             ['arresteddevelopers2023@gmail.com']
-        )
+            )
+        except:
+            print("There was an error sending the email for completing a task without editing the task")
     task.save()
+    #print("After task got saved")
     return JsonResponse({'msg': 'Status of this task has been updated'}, status=200)  # Status 200 if successfull.
 
 
@@ -391,14 +410,16 @@ def forgetpassword(request):
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
             token = PasswordResetTokenGenerator().make_token(user)
             reset_link = request.build_absolute_uri(reverse('change_password', kwargs={'uidb64': uidb64, 'token': token}))
-
-            send_mail(
-                'Reset your password',
-                f'Click the following link to reset your password: {reset_link}',
-                'noreply@gmail.com',
-                [user.email],
-                fail_silently=False,
-            )
+            try:
+                send_mail(
+                    'Reset your password',
+                    f'Click the following link to reset your password: {reset_link}',
+                    'noreply@gmail.com',
+                    [user.email],
+                    fail_silently=False,
+                )
+            except:
+                print("There was an error sending mail for password reset")
 
             # Show success message
             return render(request, 'forget_password.html', {'success': 'Password reset link has been sent to your email.'})
