@@ -88,3 +88,11 @@ class UserDepartment(models.Model):
 
     def __str__(self):
         return "User: " + self.user.get_username() + " | Deparment: " + self.department.name
+
+class PasswordResetToken(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    token = models.CharField(max_length=255)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.token}"

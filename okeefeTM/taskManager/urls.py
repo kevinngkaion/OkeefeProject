@@ -21,6 +21,7 @@ urlpatterns = [
     path('user_info/<str:username>/', views.getUserInfo, name='user_info'),
     path('resetPassword/<str:username>/', views.reset_password, name='resetPassword'),
     path('delete_task', views.delete_task, name='delete_task'),
-    path('forgetPassword', views.ForgetPassword, name='forgetPassword'),
+    path('forgetpassword', views.forgetpassword, name='forget_password'),
+    path('change_password/<str:uidb64>/<str:token>/', views.change_password, name='change_password'),
     # path('get_tasks', views.get_tasks, name='get_tasks'),    This one is commented because we are not using it
 ]

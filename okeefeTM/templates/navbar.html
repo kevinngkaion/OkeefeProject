@@ -8,42 +8,47 @@
         <a class="navbar-brand" href="{% url 'home' %}">
             {% else %}
             <a class="navbar-brand" href="{% url 'login' %}">
-        {% endif %}
-            <img
-                id="logo"
-                src="{% static 'media/okeefeLogo.png' %}"
-                alt="Logo"
-                draggable="false"
-                height="100"
-        /></a>
+                {% endif %}
+                <img
+                        id="logo"
+                        src="{% static 'media/okeefeLogo.png' %}"
+                        alt="Logo"
+                        draggable="false"
+                        height="100"
+                /></a>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ms-auto align-items-center">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    {% if not request.resolver_match.view_name == 'change_password' %}
 
-                {% if user.is_authenticated %}
+                    {% if user.is_authenticated %}
                     {% if not user.is_staff %}
-                        <li class="nav-item ms-3">
-                            <a class="button-5" href="{% url 'home' %}"><i class="fas fa-home pe-2"></i>Task Home</a>
-                        </li>
-                        <li class="nav-item ms-3">
-                            <a class="button-5" href="{% url 'user_info' user.username %}"><i class="fas fa-user-circle pe-2"></i>Manage Account</a>
-                        </li>
+                    <li class="nav-item ms-3">
+                        <a class="button-5" href="{% url 'home' %}"><i class="fas fa-home pe-2"></i>Task Home</a>
+                    </li>
+                    <li class="nav-item ms-3">
+                        <a class="button-5" href="{% url 'user_info' user.username %}"><i
+                                class="fas fa-user-circle pe-2"></i>Manage Account</a>
+                    </li>
                     {% else %}
-                        <li class="nav-item ms-3">
-                            <a class="button-5" href="{% url 'home' %}"><i class="fas fa-home pe-2"></i>Task Home</a>
-                        </li>
-                        <li class="nav-item ms-3">
-                            <a class="button-5" href="{% url 'getAllUsers' %}"><i class="fas fa-user-circle pe-2"></i>Manage Account</a>
-                        </li>
+                    <li class="nav-item ms-3">
+                        <a class="button-5" href="{% url 'home' %}"><i class="fas fa-home pe-2"></i>Task Home</a>
+                    </li>
+                    <li class="nav-item ms-3">
+                        <a class="button-5" href="{% url 'getAllUsers' %}"><i class="fas fa-user-circle pe-2"></i>Manage
+                            Account</a>
+                    </li>
 
 
                     {% endif %}
                     <li class="nav-item ms-3">
-                        <a class="button-5" role="button" href={% url 'logout' %}>Log out</a>
-                    </li>
-                {% endif %}
-            </ul>
-        </div>
+                        <a class="button-5" role="button" href={% url 'logout' %}>Log out
+        </a>
+        </li>
+        {% endif %}
+        {% endif %}
+        </ul>
+    </div>
     </div>
 </nav>
 <!-- Navbar -->
