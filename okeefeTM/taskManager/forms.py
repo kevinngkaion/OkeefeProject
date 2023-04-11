@@ -148,7 +148,6 @@ class CreateUserForm(UserCreationForm):
             'password2': {'class': 'form-control', 'id': 'id_create_password2', },
         }
         # make the label of username field email
-        self.fields['username'].label = 'Email'
         # self.fields['username'].widget.attrs.update(attrs['username'])
         self.fields['username'].widget = forms.EmailInput(attrs=attrs['username'])
         self.fields['first_name'].widget.attrs.update(attrs['first_name'])
@@ -157,64 +156,23 @@ class CreateUserForm(UserCreationForm):
         self.fields['password1'].widget.attrs.update(attrs['password1'])
         self.fields['password2'].widget.attrs.update(attrs['password2'])
 
-    class Meta(UserCreationForm.Meta):
-        fields = UserCreationForm.Meta.fields + ('first_name', 'last_name', 'department')
-
-
-# A user creation form that includes the fields of the built-in UserCreationForm, also including department in the
-# Department table. Enter password twice to ensure it is entered correctly.
-class MyCreateUserForm(forms.ModelForm):
-    department = forms.ModelChoiceField(queryset=Department.objects.all(), empty_label='Select Department')
-    password1 = forms.CharField(widget=forms.PasswordInput(), label='Password, 8 characters minimum')
-    password2 = forms.CharField(widget=forms.PasswordInput(), label='Confirm Password')
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        attrs = {
-            'username': {'class': 'form-control', 'id': 'id_create_username', },
-            'first_name': {'class': 'form-control', 'id': 'id_create_first_name', },
-            'last_name': {'class': 'form-control', 'id': 'id_create_last_name', },
-            'email': {'class': 'form-control', 'id': 'id_create_email', },
-            'department': {'class': 'form-select', 'id': 'id_create_department', },
-            'password1': {'class': 'form-control', 'id': 'id_create_password1', },
-            'password2': {'class': 'form-control', 'id': 'id_create_password2', },
-        }
-
-        self.fields['username'].widget.attrs.update(attrs['username'])
-        self.fields['first_name'].widget.attrs.update(attrs['first_name'])
-        self.fields['last_name'].widget.attrs.update(attrs['last_name'])
-        self.fields['email'].widget.attrs.update(attrs['email'])
-        self.fields['department'].widget.attrs.update(attrs['department'])
-        self.fields['password1'].widget.attrs.update(attrs['password1'])
-        self.fields['password2'].widget.attrs.update(attrs['password2'])
-
     class Meta:
         model = User
-        labels = {'username': 'Username',
-                  'first_name': 'First Name',
-                  'last_name': 'Last Name',
-                  'email': 'Email',
-                  'department': 'Department',
-                  'password1': 'Password',
-                  'password2': 'Confirm Password',
-                  }
-
-        fields = ['username', 'first_name', 'last_name', 'email', 'department', 'password1', 'password2']
-
-    def clean_password2(self):
-        password1 = self.cleaned_data.get('password1')
-        password2 = self.cleaned_data.get('password2')
-        if password1 and password2 and password1 != password2:
-            raise forms.ValidationError("Passwords don't match")
-            self.add_error('password2', "Passwords don't match")
-        return password2
-
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user.department = self.cleaned_data['department']
-        if commit:
-            user.save()
-        return user
+        labels = {
+            'username': 'Email',
+            'first_name': 'First Name',
+            'last_name': 'Last Name',
+            'department': 'Department',
+            'password2': 'Confirm Password',
+        }
+        fields = [
+            'first_name',
+            'last_name',
+            'username',
+            'department',
+            'password1',
+            'password2',
+        ]
 
 
 class EditUserForm(ModelForm):
@@ -223,10 +181,17 @@ class EditUserForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields['username'].widget = widgets.TextInput(attrs={'class': 'form-control', 'disabled': True})
-        self.fields['department'].widget = widgets.TextInput(attrs={'class': 'form-control', 'disabled': True})
-        self.fields['first_name'].widget = widgets.TextInput(attrs={'class': 'form-control', 'disabled': True})
-        self.fields['last_name'].widget = widgets.TextInput(attrs={'class': 'form-control', 'disabled': True})
+        attrs = {
+            'username': {'class': 'form-control', 'id': 'id_edit_username', 'disabled': True},
+            'first_name': {'class': 'form-control', 'id': 'id_edit_first_name', 'disabled': True},
+            'last_name': {'class': 'form-control', 'id': 'id_edit_last_name', 'disabled': True},
+            'department': {'class': 'form-select', 'id': 'id_edit_department', 'disabled': True},
+        }
+
+        self.fields['username'].widget.attrs.update(attrs['username'])
+        self.fields['department'].widget.attrs.update(attrs['department'])
+        self.fields['first_name'].widget.attrs.update(attrs['first_name'])
+        self.fields['last_name'].widget.attrs.update(attrs['last_name'])
         # self.fields['email'].widget = widgets.EmailInput(attrs={'class': 'form-control', 'disabled': True})
 
     class Meta:
@@ -281,9 +246,17 @@ class MyUserUpdateForm(forms.ModelForm):
         fields = ['first_name', 'last_name']
 
 
-class MyResetPasswordForm(forms.ModelForm):
-    password1 = forms.CharField(label='New password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Confirm new password', widget=forms.PasswordInput)
+class MyResetPasswordForm(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        attrs = {
+            'password1': {'class': 'form-control', 'id': 'id_change_password1', },
+            'password2': {'class': 'form-control', 'id': 'id_change_password2', },
+        }
+        # make the label of username field email
+        # self.fields['username'].widget.attrs.update(attrs['username'])
+        self.fields['password1'].widget.attrs.update(attrs['password1'])
+        self.fields['password2'].widget.attrs.update(attrs['password2'])
 
     class Meta:
         model = User

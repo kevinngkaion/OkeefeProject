@@ -9,13 +9,12 @@
             <h6>You are editing the user {{ user_to_edit.first_name }}</h6> <!-- INSERT USER's NAME HERE -->
         </div>
 
-        <div class="container w-50 bg-body mt-3 border shadow-sm px-1 rounded">
+        <div class="container w-50 bg-body mt-3 border shadow-sm px-1 pb-3 rounded">
             <!-- USER EDIT BAR -->
 
             <div class="container bg-body p-4 px-4 rounded">
-                <div id="user_edit_bar" class="d-flex justify-content-between mt-1">
                 {% if user.is_staff %}
-                    <div class="col d-flex justify-content-between px-4">
+                <div id="user_edit_bar" class="d-flex justify-content-between mt-1">
                         <!-- Reset Password -->
                         <a href="{% url 'resetPassword' user_to_edit.username %}">
                             <button class="btn btn-primary text-light text-uppercase" type="button">Reset Password
@@ -31,21 +30,29 @@
                         <!-- Set as Manager -->
                         <a href="{% url 'set_manager' user_to_edit.username %}">
                             <button class="btn btn-primary text-light text-uppercase" type="button"
-                                    onclick="confirmSetManager(event, '{{ user_to_edit.username }}', '{% url "set_manager" user_to_edit.username %}')">
+                                    onclick="confirmSetManager(event, '{{ user_to_edit.first_name }}', '{{user_to_edit.last_name}}', '{% url "set_manager" user_to_edit.username %}', '{{user_to_edit.is_staff}}')">
+                                {% if user_to_edit.is_staff %}
+                                Remove Manager Privileges
+                                {% else %}
                                 Set as Manager
+                                {% endif %}
                             </button>
                         </a>
                     </div>
+                </div>
                 {% endif %}
-            </div>
-                <form action="{% url 'update' user_to_edit.username %}" class="form px-4 pt-4" method="post">
-
+                <form action="{% url 'update' user_to_edit.username %}" class="form px-4" method="post">
                     {% csrf_token %}
-                    {{ form.as_p }}
+                    {% for field in form %}
+                    <p>
+                        {{field.label}}
+                        {{field}}
+                    </p>
+                    {% endfor %}
 
                     <div class="col d-flex justify-content-between">
                         <!-- Enable form editing -->
-                        <button class="btn btn-primary text-light text-uppercase" type="button" onclick="enableEdit()">
+                        <button class="btn btn-primary text-light text-uppercase" type="button" onclick="enableUserEdit()">
                             Edit
                         </button>
                         <!-- Save modification -->
