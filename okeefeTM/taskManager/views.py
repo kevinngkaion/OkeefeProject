@@ -330,6 +330,14 @@ def update_task_status(request):
     task.status = request.GET.get("newStatusID")
     if task.date_completed is None and task.status is '3':
         task.date_completed = date.today()
+        send_mail(
+            "A task has been completed",
+            "Task Name: " + task.name + "\n" +
+            "Description: " + task.desc + "\n" +
+            "For more details please visit http://www.okeefetm.ca/",
+            settings.EMAIL_HOST_USER,
+            ['arresteddevelopers2023@gmail.com']
+        )
     task.save()
     return JsonResponse({'msg': 'Status of this task has been updated'}, status=200)  # Status 200 if successfull.
 
