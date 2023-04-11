@@ -228,10 +228,10 @@ togglePassword.addEventListener('click', function (e) {
     this.querySelector('i').classList.toggle('fa-eye-slash');
 });
 
-function enableEdit(){
-    $("#id_first_name").removeAttr("disabled");
-    $("#id_last_name").removeAttr("disabled");
-    $("#id_email").removeAttr("disabled");
+function enableUserEdit(){
+    $("#id_edit_first_name").removeAttr("disabled");
+    $("#id_edit_last_name").removeAttr("disabled");
+    $("#id_edit_department").removeAttr("disabled");
     $("#edit_user_save_button").removeAttr("disabled");
 }
 
@@ -251,9 +251,15 @@ function confirmDelete(event, username, url) {
     }
 }
 
-function confirmSetManager(event, username, url) {
+function confirmSetManager(event, fname, lname, url, isStaff) {
     event.preventDefault(); // prevent default link behavior
-    if (window.confirm("Are you sure you want to set " + username + "as a manager?")) {
+    let confirmMessage;
+    if (isStaff == "True"){
+        confirmMessage = "Are you sure you want to remove manager privileges from " + fname + " " + lname + "?";
+    } else {
+        confirmMessage = "Are you sure you want to set " + fname + " " + lname + " as a manager?";
+    }
+    if (window.confirm(confirmMessage)) {
         window.location.href = url;
     } else {
         alert("Set manager cancelled.");

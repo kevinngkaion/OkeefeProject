@@ -12,6 +12,8 @@
             You have successfully created a new user: {{name}}
             {% elif status == 'managerSet' %}
             {{name}} has been granted manager privileges.
+            {% elif status == 'managerRemoved' %}
+            Manager privileges have been removed from {{name}}
             {% elif status == 'reset' %}
             You have successfully changed {{name}}'s password
             {% endif %}
@@ -89,7 +91,6 @@
                                     <div class="col-11 col-md-5 mx-4">
                                         {{ field.label }}
                                         {{ field }}
-                                        {{ field.help_text }}
                                     </div>
                                 {# <!-- Group every 2 fields together into a div -->#}
                             {% elif forloop.counter0|divisibleby:2 %}
@@ -97,18 +98,18 @@
                                     <div class="col-11 col-md-5 mx-4">
                                         {{ field.label }}
                                         {{ field }}
-                                        {{ field.help_text}}
                                     </div>
                             {% else %}
                                     <div class="col-11 col-md-5 mx-4">
                                         {{ field.label }}
                                         {{ field }}
-                                        {{ field.help_text}}
                                     </div>
                                 </div>
                             {% endif %}
                         {% endfor %}
-
+                        <div class="fs-6 fst-italic fw-lighter">
+                        {{ create_user_form.password1.help_text }}
+                        </div>
                     </div>
                     <div class="modal-footer d-flex">
                         <div id="id_password_error" class="text-danger d-none">Passwords do not match</div>

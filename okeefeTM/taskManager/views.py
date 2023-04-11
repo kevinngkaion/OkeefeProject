@@ -51,6 +51,12 @@ def home(request):
         'filter': task_filter,
     }
     print(task_filter)
+
+    # Get all tasks and set status to not started if there is a user assigned and status is unassigned
+    tasks = Task.objects.filter(status=Task.UNASSIGNED).exclude(user=User.objects.get(username="admin"))
+    for task in tasks:
+        task.status = Task.NOT_STARTED
+        task.save()
     return render(request, 'home.html', context)
 
 
@@ -86,6 +92,8 @@ def create_task(request):
                         [user.username])
                 except:
                     print("There was an error sending mail for creating a task")
+    
+    
     return redirect('home')
 
 
@@ -168,7 +176,8 @@ def edit_task(request):
             task.date_due = request.POST.get("date_due")
         task.repeat = request.POST.get("repeat")
         print(task.repeat)
-        if task.repeat is "False":
+        if task.repeat:
+            print("In true condition")
             task.interval = request.POST.get("interval")
             task.intervalLength = request.POST.get("intervalLength")
         else:
@@ -192,6 +201,7 @@ def edit_task(request):
             except:
                 print("There was an error sending an email for the completion of a task in editing task")
             task.status = new_status
+        print(task.intervalLength)
         task.save()
         print("Task was updated successfully")
         return redirect('home')
@@ -265,9 +275,13 @@ def deactivate_user(request, username):
 
 def set_as_manager(request, username):
     user = User.objects.get(username=username)
-    user.is_staff = True
+    if user.is_staff:
+        status = "managerRemoved"
+    else:
+        status = "managerSet"
+    user.is_staff = not user.is_staff
     user.save()
-    return redirect(reverse('getAllUsers') + '?status=managerSet&user=' + user.username)
+    return redirect(reverse('getAllUsers') + '?status=' + status + '&user=' + user.username)
 
 
 def update_user(request, username):
@@ -278,7 +292,6 @@ def update_user(request, username):
         if form.is_valid():
             user.first_name = form.cleaned_data['first_name']
             user.last_name = form.cleaned_data['last_name']
-            user.email = form.cleaned_data['email']
             user.save()
             # check if user is a manager
             if user.is_staff:
@@ -294,30 +307,33 @@ def update_user(request, username):
 def reset_password(request, username):
     user = User.objects.get(username=username)
     userForm = MyResetPasswordForm(instance=user)
+    status = 'pending'
     if request.method == 'POST':
         form = MyResetPasswordForm(request.POST, instance=user)
         if form.is_valid():
-            # user.password = form.cleaned_data['password1']
             user.set_password(form.cleaned_data['password1'])
             user.save()
             if request.user.is_staff:
                 return redirect(reverse('getAllUsers') + '?status=reset&user=' + user.username)
             else:
                 return redirect('login')
-    context = {'form': userForm, 'user': user}
+        else:
+            status = 'failed'
+    context = {'form': userForm, 'user': user, 'status': status}
     return render(request, 'reset_password.html', context)
 
 
 def getUserInfo(request, username):
     user_to_edit = User.objects.get(username=username)
     user = request.user
+    # get the department name from the userdepartment table
+    department = UserDepartment.objects.get(user=user_to_edit).department.name
     initial_values = {
         'username': user_to_edit.username,
         'first_name': user_to_edit.first_name,
         'last_name': user_to_edit.last_name,
         'email': user_to_edit.email,
-        # get the department name from the userdepartment table
-        'department': UserDepartment.objects.get(user=user_to_edit).department.name,
+        'department': Department.objects.get(name=department),
     }
     userForm = EditUserForm(initial=initial_values)
     context = {'form': userForm, 'user_to_edit': user_to_edit, 'user': user}
