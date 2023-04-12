@@ -15,6 +15,7 @@ from dateutil.relativedelta import relativedelta
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import send_mail
 
+CURATOR = "curator@okeeferanch.ca"
 
 # Create your views here.
 
@@ -89,7 +90,7 @@ def create_task(request):
                         "Description: " + request.POST.get("desc") + "\n" +
                         "For more details please visit http://www.okeefetm.ca/",
                         settings.EMAIL_HOST_USER,
-                        [user.username])
+                        [user.email])
                 except:
                     print("There was an error sending mail for creating a task")
     
@@ -167,7 +168,7 @@ def edit_task(request):
                             "Description: " + task.desc + "\n" +
                             "For more details please visit http://www.okeefetm.ca/",
                             settings.EMAIL_HOST_USER,
-                            [task.user.username])
+                            [task.user.email])
                 except:
                     print("There was an error sending an email for reassigning a task user")
             task.isSeen = False
@@ -196,7 +197,7 @@ def edit_task(request):
                     "Description: " + task.desc + "\n" +
                     "For more details please visit http://www.okeefetm.ca/",
                     settings.EMAIL_HOST_USER,
-                    ['arresteddevelopers2023@gmail.com']
+                    [CURATOR]
                 )
             except:
                 print("There was an error sending an email for the completion of a task in editing task")
@@ -383,7 +384,7 @@ def update_task_status(request):
             "Description: " + task.desc + "\n" +
             "For more details please visit http://www.okeefetm.ca/",
             settings.EMAIL_HOST_USER,
-            ['arresteddevelopers2023@gmail.com']
+            [CURATOR]
             )
         except:
             print("There was an error sending the email for completing a task without editing the task")
