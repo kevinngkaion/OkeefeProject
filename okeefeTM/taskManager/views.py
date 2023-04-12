@@ -228,10 +228,13 @@ def register(request):
             userDepartment.user = user
             userDepartment.department = Department.objects.get(id=request.POST.get("department"))
             userDepartment.save()
+            # save the username of the user (which should be their email) into the user.email field
+            user.email = user.username
+            user.save()
             print(user.username)
             try:
-                send_mail('Your Account Has Been Created',
-                        "Your account for the O'Keefe Task Manager has been created",
+                send_mail("O'Keefe Ranch Task Manager: Your Account Has Been Created",
+                        "Your account for the O'Keefe Task Manager has been created\nIf you do not know your password, please see your manager or Ranch Curator\n",
                         settings.EMAIL_HOST_USER,
                         [user.email])
             except:
