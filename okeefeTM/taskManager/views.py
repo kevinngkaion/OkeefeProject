@@ -176,7 +176,7 @@ def edit_task(request):
             task.date_due = request.POST.get("date_due")
         task.repeat = request.POST.get("repeat")
         print(task.repeat)
-        if task.repeat:
+        if task.repeat is "True":
             print("In true condition")
             task.interval = request.POST.get("interval")
             task.intervalLength = request.POST.get("intervalLength")
